@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/huf0813/pembukuan_tk/routes"
 )
@@ -10,7 +12,11 @@ import (
 var router routes.Route
 
 func main() {
-	const port string = ":8080"
+	port := os.Getenv("PORT")
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
+
 	fmt.Printf("Running at port %s", port)
 	if err := http.ListenAndServe(port, router.Routes()); err != nil {
 		panic(err)
