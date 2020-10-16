@@ -17,7 +17,7 @@ func main() {
 		log.Fatal("$PORT must be set")
 	}
 
-	fmt.Printf("Running at port %s", port)
+	fmt.Printf("Running at port %s", ":"+port)
 	if err := http.ListenAndServe(port, router.Routes()); err != nil {
 		panic(err)
 	}
