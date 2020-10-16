@@ -18,7 +18,7 @@ func main() {
 	}
 
 	fmt.Printf("Running at port %s", ":"+port)
-	if err := http.ListenAndServe(port, router.Routes()); err != nil {
+	if err := http.ListenAndServe(":"+port, router.Routes()); err != nil {
 		panic(err)
 	}
 }
