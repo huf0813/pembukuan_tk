@@ -3,14 +3,14 @@ package middleware
 import (
 	"github.com/dgrijalva/jwt-go"
 	mdl "github.com/huf0813/pembukuan_tk/model"
-	"github.com/huf0813/pembukuan_tk/utils/delivery"
+	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
 	"strings"
 )
 
 type TokenMiddleware struct {
 	TokenModel mdl.Token
-	Res        delivery.CustomJSONUtil
+	Res        customJSON.JSONCustom
 }
 
 type TokenMiddlewareInterface interface {

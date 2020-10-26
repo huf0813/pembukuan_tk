@@ -22,3 +22,10 @@ type UserLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+func (ul *UserLogin) NewUserLogin(username, password string) *UserLogin {
+	return &UserLogin{
+		Username: username,
+		Password: password,
+	}
+}

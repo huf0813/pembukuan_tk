@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"github.com/huf0813/pembukuan_tk/model"
 	"github.com/huf0813/pembukuan_tk/usecase"
-	"github.com/huf0813/pembukuan_tk/utils/delivery"
+	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
 )
 
 type UserCTR struct {
-	Res         delivery.CustomJSONUtil
+	Res         customJSON.JSONCustom
 	UserUseCase usecase.UserUseCase
 }
 
@@ -25,6 +25,7 @@ func (uc *UserCTR) Login(w http.ResponseWriter, r *http.Request) {
 		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
 		return
 	}
+
 	result, err := uc.UserUseCase.Login(&userLogin)
 	if err != nil {
 		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)

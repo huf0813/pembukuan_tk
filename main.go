@@ -9,7 +9,9 @@ import (
 	"os"
 )
 
-var router routes.Route
+var (
+	router routes.Route
+)
 
 func main() {
 	if err := godotenv.Load(); err != nil {
