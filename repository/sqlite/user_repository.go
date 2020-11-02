@@ -16,8 +16,8 @@ type UserRepoInterface interface {
 }
 
 var users = []model.User{
-	{"Haroun", "huf0813", "harun@gmail.com", "08123456789", "dummy"},
-	{"Joseph", "joseph88888", "joseph@gmail.com", "08123456789", "dummy"},
+	{"Haroun", "huf0813", "harun@gmail.com", "08123456789", "dummy", 1},
+	{"Joseph", "joseph88888", "joseph@gmail.com", "08123456789", "dummy", 2},
 }
 
 func (ur *UserRepo) GetUsers() (*[]model.User, error) {

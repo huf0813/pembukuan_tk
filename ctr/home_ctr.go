@@ -9,7 +9,7 @@ import (
 
 type HomeCTR struct {
 	Res       customJSON.JSONCustom
-	Timestamp utils.Timestamp
+	TimeUtils utils.Timestamp
 }
 
 type HomeCTRInterface interface {
@@ -17,5 +17,5 @@ type HomeCTRInterface interface {
 }
 
 func (h *HomeCTR) Welcome(w http.ResponseWriter, _ *http.Request) {
-	h.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", "Welcome to API at "+h.Timestamp.PrettyTime(time.Now()))
+	h.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", "Welcome to API at "+h.TimeUtils.PrettyTime(time.Now()))
 }

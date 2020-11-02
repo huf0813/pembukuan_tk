@@ -8,9 +8,11 @@ import (
 )
 
 type Route struct {
-	HomeCTR ctr.HomeCTR
-	UserCtr ctr.UserCTR
-	Auth    middleware.TokenMiddleware
+	HomeCTR  ctr.HomeCTR
+	AuthCTR  ctr.AuthCTR
+	UserCTR  ctr.UserCTR
+	AdminCTR ctr.AdminCTR
+	Auth     middleware.TokenMiddleware
 }
 
 type RouteInterface interface {
@@ -22,9 +24,12 @@ func (r *Route) Routes() *mux.Router {
 
 	route.HandleFunc("/", r.HomeCTR.Welcome).Methods("GET")
 
-	route.HandleFunc("/login", r.UserCtr.Login).Methods("POST")
-	route.HandleFunc("/users/testing", r.UserCtr.TestingGetUsers).Methods("GET")
-	route.Handle("/users", r.Auth.TokenMiddleware(http.HandlerFunc(r.UserCtr.GetUsers))).Methods("GET")
+	route.HandleFunc("/login", r.AuthCTR.Login).Methods("POST")
 
+	// users
+	route.Handle("/dashboard", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.DashboardUser))).Methods("GET")
+
+	// admins
+	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")
 	return route
 }

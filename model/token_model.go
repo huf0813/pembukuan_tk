@@ -1,7 +1,9 @@
 package model
 
-type Token struct{}
+import "github.com/dgrijalva/jwt-go"
 
-func (t *Token) NewToken() *Token {
-	return &Token{}
+type Token struct {
+	Username   string `json:"username"`
+	UserTypeID int    `json:"user_type_id"`
+	jwt.StandardClaims
 }
