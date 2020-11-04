@@ -9,13 +9,13 @@ type User struct {
 	UserTypeID int    `json:"user_type_id"`
 }
 
-func (u *User) NewUser(name, username, email, phone, password string) *User {
+func (u *User) NewUser(name, username, email, phone, password string, userTypeID int) *User {
 	return &User{
 		Name:       name,
 		Username:   username,
 		Email:      email,
 		Phone:      phone,
 		Password:   password,
-		UserTypeID: 2,
+		UserTypeID: userTypeID,
 	}
 }

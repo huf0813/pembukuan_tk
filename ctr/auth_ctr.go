@@ -10,7 +10,6 @@ import (
 
 type AuthCTR struct {
 	Res         customJSON.JSONCustom
-	UserUseCase usecase.UserUseCase
 	AuthUseCase usecase.AuthUseCase
 }
 

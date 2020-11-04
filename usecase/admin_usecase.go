@@ -1,4 +1,3 @@
 package usecase
 
-type AdminUseCase struct {
-}
+type AdminUseCase struct{}
