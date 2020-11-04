@@ -28,7 +28,6 @@ func (tm *TokenMiddleware) ReadSecretENV() (string, error) {
 	if err := godotenv.Load(); err != nil {
 		return "", err
 	}
-
 	return os.Getenv("SECRET"), nil
 }
 
