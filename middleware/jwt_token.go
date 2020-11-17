@@ -41,7 +41,8 @@ func (tm *TokenMiddleware) GetToken(username string, userTypeID int) (string, er
 	claims.UserTypeID = userTypeID
 	claims.ExpiresAt = time.Now().Add(time.Minute * 3).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(secretENV))
+	result := []byte(secretENV)
+	return token.SignedString(result)
 }
 
 func (tm *TokenMiddleware) VerifyToken(userToken string) (jwt.Claims, error) {
@@ -51,7 +52,8 @@ func (tm *TokenMiddleware) VerifyToken(userToken string) (jwt.Claims, error) {
 	}
 
 	token, err := jwt.Parse(userToken, func(token *jwt.Token) (interface{}, error) {
-		return []byte(secretENV), nil
+		result := []byte(secretENV)
+		return result, nil
 	})
 	if err != nil {
 		return nil, err
