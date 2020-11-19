@@ -9,7 +9,7 @@ type ProductUseCase struct {
 	ProductRepo sqlite.ProductRepo
 }
 
-func (pus *ProductUseCase) GetProducts() ([]model.Product, error) {
+func (pus *ProductUseCase) GetProducts() ([]model.ProductStockAndType, error) {
 	result, err := pus.ProductRepo.GetProducts()
 	if err != nil {
 		return nil, err
@@ -23,4 +23,12 @@ func (pus *ProductUseCase) AddProduct(newProduct *model.Product) (*model.Product
 		return nil, err
 	}
 	return result, nil
+}
+
+func (pus *ProductUseCase) AddProductStock(addProductStock *model.ProductIncrease) (*model.ProductIncrease, error) {
+	result, err := pus.ProductRepo.AddProductStock(addProductStock)
+	if err != nil {
+		return nil, err
+	}
+	return result, err
 }

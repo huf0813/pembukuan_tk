@@ -32,7 +32,27 @@ func (pctr *ProductCTR) AddProduct(w http.ResponseWriter, r *http.Request) {
 			http.StatusBadRequest, "error", err.Error(), nil)
 		return
 	}
+
 	result, err := pctr.ProductUseCase.AddProduct(&newUser)
+	if err != nil {
+		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusInternalServerError, "error", err.Error(), nil)
+		return
+	}
+	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		200, "success", "", result)
+	return
+}
+
+func (pctr *ProductCTR) AddProductStock(w http.ResponseWriter, r *http.Request) {
+	var addProductStock *model.ProductIncrease
+	if err := json.NewDecoder(r.Body).Decode(&addProductStock); err != nil {
+		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusBadRequest, "error", err.Error(), nil)
+		return
+	}
+
+	result, err := pctr.ProductUseCase.AddProductStock(addProductStock)
 	if err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
 			http.StatusInternalServerError, "error", err.Error(), nil)
