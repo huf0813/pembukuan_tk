@@ -12,7 +12,7 @@ type ProductRepo struct {
 	SqlConn sqlite.ConnSqlite
 }
 
-func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
+func (pr *ProductRepo) GetProducts() ([]model.ProductStock, error) {
 	conn := pr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -22,6 +22,7 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 	if conn == nil {
 		return nil, errors.New("connection failed to db")
 	}
+
 	queryStock := "(select sum(product_increases.quantity) from product_increases where product_increases.product_id=products.id) stock"
 	queryQtyInvoice := "(select sum(product_decreases.quantity) from product_decreases where product_decreases.product_id=products.id) qty_invoice"
 	stringQuery := fmt.Sprintf("select id, name, price, %s, %s from products", queryStock, queryQtyInvoice)
@@ -30,9 +31,9 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 		return nil, err
 	}
 
-	var result []model.ProductStockAndType
+	var result []model.ProductStock
 	for rows.Next() {
-		var dataRowProduct model.ProductStockAndType
+		var dataRowProduct model.ProductStock
 		var qtyProduct sql.NullInt64
 		var qtyInvoice sql.NullInt64
 		if err := rows.Scan(&dataRowProduct.ID,

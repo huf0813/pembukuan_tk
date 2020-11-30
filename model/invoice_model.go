@@ -16,3 +16,13 @@ type InvoiceReq struct {
 	UserID      int             `json:"user_id"`
 	ListProduct []ProductDecReq `json:"list_product"`
 }
+
+type InvoiceWithDetail struct {
+	ID                int                    `json:"id"`
+	CustomerName      string                 `json:"customer_name"`
+	CustomerPhone     string                 `json:"customer_phone"`
+	CustomerEmail     string                 `json:"customer_email"`
+	CustomerAddress   string                 `json:"customer_address"`
+	TotalInvoicePrice string                 `json:"total_invoice_price"`
+	Products          []ProductInsideInvoice `json:"products"`
+}

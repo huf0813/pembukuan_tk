@@ -26,7 +26,7 @@ func (pus *ProductUseCase) DecProductValidation(productDec *model.ProductDec) er
 	return nil
 }
 
-func (pus *ProductUseCase) GetProducts() ([]model.ProductStockAndType, error) {
+func (pus *ProductUseCase) GetProducts() ([]model.ProductStock, error) {
 	result, err := pus.ProductRepo.GetProducts()
 	if err != nil {
 		return nil, err

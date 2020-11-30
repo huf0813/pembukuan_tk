@@ -83,3 +83,11 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *model.InvoiceReq) (*model.I
 		UserID:     newInvoiceReq.UserID,
 	}, nil
 }
+
+func (iuc *InvoiceUseCase) GetInvoices() ([]model.InvoiceWithDetail, error) {
+	result, err := iuc.InvoiceRepo.GetInvoices()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

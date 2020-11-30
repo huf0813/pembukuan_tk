@@ -39,6 +39,7 @@ func (r *Route) Routes() *mux.Router {
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/products/stock", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
 	route.Handle("/invoice", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.AddNewInvoice))).Methods("POST")
+	route.Handle("/invoice", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.GetInvoices))).Methods("GET")
 
 	// admins
 	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")

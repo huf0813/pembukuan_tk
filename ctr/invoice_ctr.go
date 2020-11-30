@@ -32,3 +32,16 @@ func (ictr *InvoiceCTR) AddNewInvoice(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK, "success", "", result)
 	return
 }
+
+func (ictr *InvoiceCTR) GetInvoices(w http.ResponseWriter, _ *http.Request) {
+	result, err := ictr.InvoiceUseCase.GetInvoices()
+	if err != nil {
+		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusInternalServerError, "error", err.Error(), nil)
+		return
+	}
+
+	ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
+	return
+}
