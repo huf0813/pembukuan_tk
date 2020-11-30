@@ -22,8 +22,9 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 	if conn == nil {
 		return nil, errors.New("connection failed to db")
 	}
-	subQueryStock := "((select sum(product_increases.quantity) from product_increases where product_increases.product_id=products.id) - (select sum(product_decreases.quantity) from product_decreases where product_decreases.product_id=products.id)) stock"
-	stringQuery := fmt.Sprintf("select id, name, price, %s from products", subQueryStock)
+	queryStock := "(select sum(product_increases.quantity) from product_increases where product_increases.product_id=products.id) stock"
+	queryQtyInvoice := "(select sum(product_decreases.quantity) from product_decreases where product_decreases.product_id=products.id) qty_invoice"
+	stringQuery := fmt.Sprintf("select id, name, price, %s, %s from products", queryStock, queryQtyInvoice)
 	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
@@ -32,17 +33,19 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 	var result []model.ProductStockAndType
 	for rows.Next() {
 		var dataRowProduct model.ProductStockAndType
-		var dataRowProductStock sql.NullInt64
+		var qtyProduct sql.NullInt64
+		var qtyInvoice sql.NullInt64
 		if err := rows.Scan(&dataRowProduct.ID,
 			&dataRowProduct.Name,
 			&dataRowProduct.Price,
-			&dataRowProductStock); err != nil {
+			&qtyProduct, &qtyInvoice); err != nil {
 			return nil, err
 		}
-		if dataRowProductStock.Valid {
-			dataRowProduct.Stock = dataRowProductStock.Int64
-		} else {
-			dataRowProduct.Stock = 0
+		if qtyProduct.Valid {
+			dataRowProduct.Stock += qtyProduct.Int64
+		}
+		if qtyInvoice.Valid {
+			dataRowProduct.Stock -= qtyInvoice.Int64
 		}
 		result = append(result, dataRowProduct)
 	}
