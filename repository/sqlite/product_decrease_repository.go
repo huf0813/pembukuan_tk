@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"errors"
+	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/model"
 )
@@ -54,8 +55,8 @@ func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]model.P
 	}
 
 	// get products inside invoice
-	stringQueryGetProductsInsideInvoice := "SELECT products.name, products.price, product_decreases.quantity, (products.price * product_decreases.quantity) product_total_price from products join product_decreases on products.id=product_decreases.product_id where product_decreases.invoice_id=?"
-	rows, err := conn.Query(stringQueryGetProductsInsideInvoice)
+	stringQuery := fmt.Sprintf("SELECT products.name, products.price, product_decreases.quantity, (products.price * product_decreases.quantity) product_total_price from products join product_decreases on products.id=product_decreases.product_id where product_decreases.invoice_id=%d", invoiceID)
+	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
 	}

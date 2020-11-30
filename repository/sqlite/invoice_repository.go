@@ -8,7 +8,8 @@ import (
 )
 
 type InvoiceRepo struct {
-	SqlConn sqlite.ConnSqlite
+	SqlConn             sqlite.ConnSqlite
+	ProductDecreaseRepo ProductDecreaseRepo
 }
 
 func (ir *InvoiceRepo) AddInvoice(newInvoice *model.Invoice) (*model.Invoice, error) {
@@ -71,6 +72,9 @@ func (ir *InvoiceRepo) GetInvoices() ([]model.InvoiceWithDetail, error) {
 			&dataRow.CustomerEmail,
 			&dataRow.CustomerAddress,
 			&dataRow.TotalInvoicePrice); err != nil {
+			return nil, err
+		}
+		if dataRow.Products, err = ir.ProductDecreaseRepo.GetProductDecreaseByID(dataRow.ID); err != nil {
 			return nil, err
 		}
 		result = append(result, dataRow)
