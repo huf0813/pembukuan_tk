@@ -10,9 +10,9 @@ type UserUseCase struct {
 }
 
 type UserUseCaseInterface interface {
-	GetUsers() (*[]model.User, error)
+	GetUsers() ([]model.User, error)
 }
 
-func (uuc *UserUseCase) GetUsers() (*[]model.User, error) {
+func (uuc *UserUseCase) GetUsers() ([]model.User, error) {
 	return uuc.UserRepo.GetUsers()
 }

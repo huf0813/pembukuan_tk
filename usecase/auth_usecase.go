@@ -18,7 +18,7 @@ type AuthUseCaseInterface interface {
 }
 
 func (auc *AuthUseCase) ValidateUser(user *model.AuthLogin) error {
-	if user.Username == "" && user.Password == "" {
+	if user.Username == "" || user.Password == "" {
 		return errors.New("field is empty")
 	}
 	return nil

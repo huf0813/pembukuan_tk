@@ -1,20 +1,15 @@
 package model
 
 type User struct {
-	Name       string `json:"name"`
+	ID         int    `json:"id"`
 	Username   string `json:"username"`
-	Email      string `json:"email"`
-	Phone      string `json:"phone"`
 	Password   string `json:"password"`
 	UserTypeID int    `json:"user_type_id"`
 }
 
-func (u *User) NewUser(name, username, email, phone, password string, userTypeID int) *User {
+func (u *User) NewUser(username, password string, userTypeID int) *User {
 	return &User{
-		Name:       name,
 		Username:   username,
-		Email:      email,
-		Phone:      phone,
 		Password:   password,
 		UserTypeID: userTypeID,
 	}

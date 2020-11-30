@@ -14,7 +14,7 @@ type CustomerUseCaseInterface interface {
 	GetCustomers() (*[]model.Customer, error)
 }
 
-func (cuc *CustomerUseCase) GetCustomers() (*[]model.Customer, error) {
+func (cuc *CustomerUseCase) GetCustomers() ([]model.Customer, error) {
 	result, err := cuc.CustomerRepo.GetCustomers()
 	if err != nil {
 		return nil, err

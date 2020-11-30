@@ -39,7 +39,7 @@ func (tm *TokenMiddleware) GetToken(username string, userTypeID int) (string, er
 	claims := tm.TokenModel
 	claims.Username = username
 	claims.UserTypeID = userTypeID
-	claims.ExpiresAt = time.Now().Add(time.Minute * 3).Unix()
+	claims.ExpiresAt = time.Now().Add(time.Hour * 2).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	result := []byte(secretENV)
 	return token.SignedString(result)

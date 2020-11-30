@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/model"
 )
@@ -21,7 +22,9 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 	if conn == nil {
 		return nil, errors.New("connection failed to db")
 	}
-	rows, err := conn.Query("select id, name, price, (select name from product_types WHERE product_types.id = products.product_type_id) product_type, (select sum(product_increases.quantity) from product_increases WHERE product_increases.product_id = products.id) stock from products")
+	subQueryStock := "((select sum(product_increases.quantity) from product_increases where product_increases.product_id=products.id) - (select sum(product_decreases.quantity) from product_decreases where product_decreases.product_id=products.id)) stock"
+	stringQuery := fmt.Sprintf("select id, name, price, %s from products", subQueryStock)
+	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
 	}
@@ -29,16 +32,15 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStockAndType, error) {
 	var result []model.ProductStockAndType
 	for rows.Next() {
 		var dataRowProduct model.ProductStockAndType
-		var dataRowProduct_Stock sql.NullInt64
+		var dataRowProductStock sql.NullInt64
 		if err := rows.Scan(&dataRowProduct.ID,
 			&dataRowProduct.Name,
 			&dataRowProduct.Price,
-			&dataRowProduct.ProductType,
-			&dataRowProduct_Stock); err != nil {
+			&dataRowProductStock); err != nil {
 			return nil, err
 		}
-		if dataRowProduct_Stock.Valid {
-			dataRowProduct.Stock = dataRowProduct_Stock.Int64
+		if dataRowProductStock.Valid {
+			dataRowProduct.Stock = dataRowProductStock.Int64
 		} else {
 			dataRowProduct.Stock = 0
 		}
@@ -59,11 +61,11 @@ func (pr *ProductRepo) AddProduct(newUser *model.Product) (*model.Product, error
 	}
 
 	result, err :=
-		conn.Prepare("insert into products(name, price, product_type_id) values (?, ?, ?)")
+		conn.Prepare("insert into products(name, price) values (?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newUser.Name, newUser.Price, newUser.ProductTypeID)
+	getID, err := result.Exec(newUser.Name, newUser.Price)
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +75,9 @@ func (pr *ProductRepo) AddProduct(newUser *model.Product) (*model.Product, error
 	}
 
 	return &model.Product{
-		ID:            int(lastInsertedID),
-		Name:          newUser.Name,
-		Price:         newUser.Price,
-		ProductTypeID: newUser.ProductTypeID,
+		ID:    int(lastInsertedID),
+		Name:  newUser.Name,
+		Price: newUser.Price,
 	}, nil
 }
 
@@ -110,5 +111,38 @@ func (pr *ProductRepo) AddProductStock(addQuantity *model.ProductIncrease) (*mod
 		ProductID: addQuantity.ProductID,
 		Quantity:  addQuantity.Quantity,
 		UserID:    addQuantity.UserID,
+	}, nil
+}
+
+func (pr *ProductRepo) DecProductStock(decQuantity *model.ProductDec) (*model.ProductDec, error) {
+	conn := pr.SqlConn.SqliteConn()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return nil, errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("insert into product_decreases(product_id, quantity, invoice_id) values (?, ?, ?)")
+	if err != nil {
+		return nil, err
+	}
+	getID, err := result.Exec(decQuantity.ProductID, decQuantity.Quantity, decQuantity.InvoiceID)
+	if err != nil {
+		return nil, err
+	}
+	lastInsertedID, err := getID.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.ProductDec{
+		ID:        int(lastInsertedID),
+		ProductID: decQuantity.ProductID,
+		Quantity:  decQuantity.Quantity,
+		InvoiceID: decQuantity.InvoiceID,
 	}, nil
 }

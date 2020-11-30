@@ -26,7 +26,7 @@ func (ac *AuthCTR) Login(w http.ResponseWriter, r *http.Request) {
 
 	result, err := ac.AuthUseCase.Login(&authLogin)
 	if err != nil {
-		ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
+		ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
 	ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", result)

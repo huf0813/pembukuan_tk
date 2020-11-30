@@ -13,6 +13,7 @@ type Route struct {
 	AuthCTR    ctr.AuthCTR
 	UserCTR    ctr.UserCTR
 	ProductCTR ctr.ProductCTR
+	InvoiceCTR ctr.InvoiceCTR
 
 	// admin
 	AdminCTR ctr.AdminCTR
@@ -37,6 +38,7 @@ func (r *Route) Routes() *mux.Router {
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.GetProducts))).Methods("GET")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/products/stock", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
+	route.Handle("/invoice", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.AddNewInvoice))).Methods("POST")
 
 	// admins
 	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")
