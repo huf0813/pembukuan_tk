@@ -37,7 +37,7 @@ func (auc *AuthUseCase) Login(userAuth *model.AuthLogin) (string, error) {
 		return "", errors.New("username or password is wrong")
 	}
 
-	result, err := auc.Auth.GetToken(userFoundInDatabase.Username, userFoundInDatabase.UserTypeID)
+	result, err := auc.Auth.GetToken(userFoundInDatabase.Username, userFoundInDatabase.UserTypeID, userFoundInDatabase.ID)
 	if err != nil {
 		return "", err
 	}

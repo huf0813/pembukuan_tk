@@ -31,7 +31,7 @@ func (tm *TokenMiddleware) ReadSecretENV() (string, error) {
 	return os.Getenv("SECRET"), nil
 }
 
-func (tm *TokenMiddleware) GetToken(username string, userTypeID int) (string, error) {
+func (tm *TokenMiddleware) GetToken(username string, userTypeID int, userID int) (string, error) {
 	secretENV, err := tm.ReadSecretENV()
 	if err != nil {
 		return "", err
@@ -39,6 +39,7 @@ func (tm *TokenMiddleware) GetToken(username string, userTypeID int) (string, er
 	claims := tm.TokenModel
 	claims.Username = username
 	claims.UserTypeID = userTypeID
+	claims.UserID = userID
 	claims.ExpiresAt = time.Now().Add(time.Hour * 2).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	result := []byte(secretENV)
