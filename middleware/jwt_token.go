@@ -12,13 +12,12 @@ import (
 )
 
 type TokenMiddleware struct {
-	TokenModel mdl.Token
-	Res        customJSON.JSONCustom
+	Res customJSON.JSONCustom
 }
 
 type TokenMiddlewareInterface interface {
 	ReadSecretENV() (string, error)
-	GetToken(username string, userTypeID int) (string, error)
+	GetToken(username string, userTypeID int, userID int) (string, error)
 	VerifyToken(userToken string) (jwt.Claims, error)
 	TokenMiddlewareIsUser(next http.Handler) http.Handler
 	TokenMiddlewareIsAdmin(next http.Handler) http.Handler
@@ -31,19 +30,30 @@ func (tm *TokenMiddleware) ReadSecretENV() (string, error) {
 	return os.Getenv("SECRET"), nil
 }
 
-func (tm *TokenMiddleware) GetToken(username string, userTypeID int, userID int) (string, error) {
+func (tm *TokenMiddleware) GetToken(username string, userTypeID int, userID int) (*mdl.TokenExtract, error) {
 	secretENV, err := tm.ReadSecretENV()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	claims := tm.TokenModel
-	claims.Username = username
-	claims.UserTypeID = userTypeID
-	claims.UserID = userID
+	claims := &mdl.Token{
+		Username:   username,
+		UserTypeID: userTypeID,
+		UserID:     userID,
+	}
 	claims.ExpiresAt = time.Now().Add(time.Hour * 2).Unix()
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	result := []byte(secretENV)
-	return token.SignedString(result)
+	tokeString, err := token.SignedString(result)
+	if err != nil {
+		return nil, err
+	}
+	return &mdl.TokenExtract{
+		Username:   claims.Username,
+		UserTypeID: claims.UserTypeID,
+		UserID:     claims.UserID,
+		Token:      tokeString,
+	}, nil
 }
 
 func (tm *TokenMiddleware) VerifyToken(userToken string) (jwt.Claims, error) {

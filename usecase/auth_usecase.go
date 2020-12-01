@@ -14,7 +14,7 @@ type AuthUseCase struct {
 
 type AuthUseCaseInterface interface {
 	ValidateUser(user *model.AuthLogin) error
-	Login(userAuth *model.AuthLogin) (string, error)
+	Login(userAuth *model.AuthLogin) (*model.Token, error)
 }
 
 func (auc *AuthUseCase) ValidateUser(user *model.AuthLogin) error {
@@ -24,22 +24,22 @@ func (auc *AuthUseCase) ValidateUser(user *model.AuthLogin) error {
 	return nil
 }
 
-func (auc *AuthUseCase) Login(userAuth *model.AuthLogin) (string, error) {
+func (auc *AuthUseCase) Login(userAuth *model.AuthLogin) (*model.TokenExtract, error) {
 	if err := auc.ValidateUser(userAuth); err != nil {
-		return "", err
+		return nil, err
 	}
 
 	userFoundInDatabase, err := auc.UserRepo.FindUserByUsername(userAuth.Username)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if userFoundInDatabase.Password != userAuth.Password {
-		return "", errors.New("username or password is wrong")
+		return nil, errors.New("username or password is wrong")
 	}
 
 	result, err := auc.Auth.GetToken(userFoundInDatabase.Username, userFoundInDatabase.UserTypeID, userFoundInDatabase.ID)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	return result, nil
