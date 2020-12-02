@@ -18,7 +18,7 @@ type AuthInterface interface {
 }
 
 func (ac *AuthCTR) Login(w http.ResponseWriter, r *http.Request) {
-	var authLogin model.AuthLogin
+	var authLogin model.UserReq
 	if err := json.NewDecoder(r.Body).Decode(&authLogin); err != nil {
 		ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
 		return

@@ -18,29 +18,29 @@ type CustomerCTRInterface interface {
 	CustomerRegister(w http.ResponseWriter, r *http.Request)
 }
 
-func (uc *CustomerCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
-	result, err := uc.CustomerUseCase.GetCustomers()
+func (cc *CustomerCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
+	result, err := cc.CustomerUseCase.GetCustomers()
 	if err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
-	uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", result)
+	cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", result)
 	return
 }
 
-func (uc *CustomerCTR) CustomerRegister(w http.ResponseWriter, r *http.Request) {
+func (cc *CustomerCTR) CustomerRegister(w http.ResponseWriter, r *http.Request) {
 	var newCustomer model.Customer
 	if err := json.NewDecoder(r.Body).Decode(&newCustomer); err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusBadRequest, "error", err.Error(), nil)
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusBadRequest, "error", err.Error(), nil)
 		return
 	}
 
-	insertedCustomer, err := uc.CustomerUseCase.AddNewCustomer(newCustomer.Name, newCustomer.Phone, newCustomer.Email, newCustomer.Address)
+	insertedCustomer, err := cc.CustomerUseCase.AddNewCustomer(newCustomer.Name, newCustomer.Phone, newCustomer.Email, newCustomer.Address)
 	if err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
 
-	uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "inserted successfully", insertedCustomer)
+	cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "inserted successfully", insertedCustomer)
 	return
 }

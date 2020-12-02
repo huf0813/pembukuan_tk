@@ -1,12 +1,12 @@
 package model
 
-type AuthLogin struct {
+type UserReq struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
 
-func (al *AuthLogin) NewUserLogin(username, password string) *AuthLogin {
-	return &AuthLogin{
+func (al *UserReq) NewUserLogin(username, password string) *UserReq {
+	return &UserReq{
 		Username: username,
 		Password: password,
 	}

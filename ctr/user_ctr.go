@@ -1,20 +1,22 @@
 package ctr
 
 import (
+	"encoding/json"
+	"github.com/huf0813/pembukuan_tk/model"
 	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
 )
 
 type UserCTR struct {
-	Res             customJSON.JSONCustom
-	UserUseCase     usecase.UserUseCase
-	CustomerUseCase usecase.CustomerUseCase
+	Res         customJSON.JSONCustom
+	UserUseCase usecase.UserUseCase
 }
 
 type UserCTRInterface interface {
 	DashboardUser(w http.ResponseWriter, r *http.Request)
 	FetchUsers(w http.ResponseWriter, r *http.Request)
+	AddUser(w http.ResponseWriter, r *http.Request)
 }
 
 func (uc *UserCTR) DashboardUser(w http.ResponseWriter, _ *http.Request) {
@@ -24,6 +26,25 @@ func (uc *UserCTR) DashboardUser(w http.ResponseWriter, _ *http.Request) {
 
 func (uc *UserCTR) FetchUsers(w http.ResponseWriter, _ *http.Request) {
 	result, err := uc.UserUseCase.GetUsers()
+	if err != nil {
+		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusInternalServerError, "error", err.Error(), nil)
+		return
+	}
+	uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
+	return
+}
+
+func (uc *UserCTR) AddUser(w http.ResponseWriter, r *http.Request) {
+	var newUser model.UserReq
+	if err := json.NewDecoder(r.Body).Decode(&newUser); err != nil {
+		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusBadRequest, "error", err.Error(), nil)
+		return
+	}
+
+	result, err := uc.UserUseCase.AddUser(newUser.Username, newUser.Password, 2)
 	if err != nil {
 		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
 			http.StatusInternalServerError, "error", err.Error(), nil)
