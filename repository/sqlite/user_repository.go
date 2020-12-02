@@ -29,7 +29,7 @@ func (ur *UserRepo) GetUsers() ([]model.User, error) {
 		return nil, errors.New("connection failed to db")
 	}
 
-	rows, err := conn.Query("select id, user_type_id, username from users")
+	rows, err := conn.Query("select id, user_type_id, username, password from users")
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,8 @@ func (ur *UserRepo) GetUsers() ([]model.User, error) {
 		var rowData model.User
 		if err := rows.Scan(&rowData.ID,
 			&rowData.UserTypeID,
-			&rowData.Username); err != nil {
+			&rowData.Username,
+			&rowData.Password); err != nil {
 			return nil, err
 		}
 		result = append(result, rowData)
