@@ -16,6 +16,9 @@ func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *model.InvoiceReq) er
 	if newInvoiceReq.ListProduct == nil {
 		return err
 	}
+	if len(newInvoiceReq.ListProduct) == 0 {
+		return err
+	}
 	if newInvoiceReq.UserID <= 0 {
 		return err
 	}
