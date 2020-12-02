@@ -13,8 +13,9 @@ type UserRepo struct {
 }
 
 type UserRepoInterface interface {
-	GetUsers() (*[]model.User, error)
-	FindUserByUsername() (*model.User, bool)
+	GetUsers() ([]model.User, error)
+	FindUserByUsername(usernameSearch string) (*model.User, error)
+	AddUser(user *model.User) (*model.User, error)
 }
 
 func (ur *UserRepo) GetUsers() ([]model.User, error) {
@@ -64,4 +65,37 @@ func (ur *UserRepo) FindUserByUsername(usernameSearch string) (*model.User, erro
 		return nil, err
 	}
 	return &founded, nil
+}
+
+func (ur *UserRepo) AddUser(newUser *model.User) (*model.User, error) {
+	conn := ur.SqlConn.SqliteConn()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return nil, errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("insert into users(user_type_id, username, password) values (?, ?, ?)")
+	if err != nil {
+		return nil, err
+	}
+	getID, err := result.Exec(newUser.UserTypeID, newUser.Username, newUser.Password)
+	if err != nil {
+		return nil, err
+	}
+	lastInsertedID, err := getID.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		ID:         int(lastInsertedID),
+		Username:   newUser.Username,
+		Password:   newUser.Password,
+		UserTypeID: newUser.UserTypeID,
+	}, nil
 }

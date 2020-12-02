@@ -8,16 +8,14 @@ import (
 )
 
 type Route struct {
-	// user
-	HomeCTR    ctr.HomeCTR
-	AuthCTR    ctr.AuthCTR
-	UserCTR    ctr.UserCTR
-	ProductCTR ctr.ProductCTR
-	InvoiceCTR ctr.InvoiceCTR
-
-	// admin
-	AdminCTR ctr.AdminCTR
-	Auth     middleware.TokenMiddleware
+	HomeCTR     ctr.HomeCTR
+	AuthCTR     ctr.AuthCTR
+	UserCTR     ctr.UserCTR
+	ProductCTR  ctr.ProductCTR
+	InvoiceCTR  ctr.InvoiceCTR
+	CustomerCTR ctr.CustomerCTR
+	AdminCTR    ctr.AdminCTR
+	Auth        middleware.TokenMiddleware
 }
 
 type RouteInterface interface {
@@ -27,14 +25,16 @@ type RouteInterface interface {
 func (r *Route) Routes() *mux.Router {
 	route := mux.NewRouter()
 
+	// welcome to API
 	route.HandleFunc("/", r.HomeCTR.Welcome).Methods("GET")
 
+	// auth
 	route.HandleFunc("/login", r.AuthCTR.Login).Methods("POST")
 
 	// users
 	route.Handle("/dashboard", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.DashboardUser))).Methods("GET")
-	route.Handle("/customers/register", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.CustomerRegister))).Methods("POST")
-	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.FetchCustomers))).Methods("GET")
+	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.CustomerCTR.CustomerRegister))).Methods("POST")
+	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.CustomerCTR.FetchCustomers))).Methods("GET")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.GetProducts))).Methods("GET")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/products/stock", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
@@ -43,13 +43,14 @@ func (r *Route) Routes() *mux.Router {
 
 	// admins
 	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")
-	route.Handle("/admin/customers/register", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.CustomerRegister))).Methods("POST")
-	route.Handle("/admin/customers", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.FetchCustomers))).Methods("GET")
+	route.Handle("/admin/customers/register", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.CustomerRegister))).Methods("POST")
+	route.Handle("/admin/customers", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.FetchCustomers))).Methods("GET")
 	route.Handle("/admin/products", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.GetProducts))).Methods("GET")
 	route.Handle("/admin/products", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/admin/products/stock", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
 	route.Handle("/admin/invoice", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.InvoiceCTR.AddNewInvoice))).Methods("POST")
 	route.Handle("/admin/invoice", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.InvoiceCTR.GetInvoices))).Methods("GET")
+	route.Handle("/admin/users", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.FetchUsers))).Methods("GET")
 
 	return route
 }

@@ -1,8 +1,6 @@
 package ctr
 
 import (
-	"encoding/json"
-	"github.com/huf0813/pembukuan_tk/model"
 	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
@@ -16,8 +14,7 @@ type UserCTR struct {
 
 type UserCTRInterface interface {
 	DashboardUser(w http.ResponseWriter, r *http.Request)
-	CustomerRegister(w http.ResponseWriter, r *http.Request)
-	FetchCustomers(w http.ResponseWriter, r *http.Request)
+	FetchUsers(w http.ResponseWriter, r *http.Request)
 }
 
 func (uc *UserCTR) DashboardUser(w http.ResponseWriter, _ *http.Request) {
@@ -25,29 +22,14 @@ func (uc *UserCTR) DashboardUser(w http.ResponseWriter, _ *http.Request) {
 	return
 }
 
-func (uc *UserCTR) CustomerRegister(w http.ResponseWriter, r *http.Request) {
-	var newCustomer model.Customer
-	if err := json.NewDecoder(r.Body).Decode(&newCustomer); err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusBadRequest, "error", err.Error(), nil)
-		return
-	}
-
-	insertedCustomer, err := uc.CustomerUseCase.AddNewCustomer(newCustomer.Name, newCustomer.Phone, newCustomer.Email, newCustomer.Address)
+func (uc *UserCTR) FetchUsers(w http.ResponseWriter, _ *http.Request) {
+	result, err := uc.UserUseCase.GetUsers()
 	if err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
+		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusInternalServerError, "error", err.Error(), nil)
 		return
 	}
-
-	uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "inserted successfully", insertedCustomer)
-	return
-}
-
-func (uc *UserCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
-	result, err := uc.CustomerUseCase.GetCustomers()
-	if err != nil {
-		uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusInternalServerError, "error", err.Error(), nil)
-		return
-	}
-	uc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", result)
+	uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
 	return
 }
