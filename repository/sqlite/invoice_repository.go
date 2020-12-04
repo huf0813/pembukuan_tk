@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/model"
+	"time"
 )
 
 type InvoiceRepo struct {
@@ -24,11 +25,11 @@ func (ir *InvoiceRepo) AddInvoice(newInvoice *model.Invoice) (*model.Invoice, er
 	}
 
 	result, err :=
-		conn.Prepare("insert into invoices(customer_id, user_id) values (?, ?)")
+		conn.Prepare("insert into invoices(customer_id, user_id, created_at, updated_at) values (?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID)
+	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID, time.Now(), time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +58,7 @@ func (ir *InvoiceRepo) GetInvoices() ([]model.InvoiceWithDetail, error) {
 
 	// get invoices
 	subQueryTotalPerInvoice := "(SELECT sum(product_decreases.quantity * products.price) from product_decreases join products on products.id=product_decreases.product_id where product_decreases.invoice_id=invoices.id) total_price"
-	stringQuery := fmt.Sprintf("SELECT invoices.id, customers.name, customers.phone, customers.email, customers.address, %s from invoices join customers on customers.id=invoices.customer_id", subQueryTotalPerInvoice)
+	stringQuery := fmt.Sprintf("SELECT invoices.id, customers.name, customers.phone, customers.email, customers.address, invoices.created_at, invoices.updated_at, %s from invoices join customers on customers.id=invoices.customer_id", subQueryTotalPerInvoice)
 	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
@@ -71,6 +72,8 @@ func (ir *InvoiceRepo) GetInvoices() ([]model.InvoiceWithDetail, error) {
 			&dataRow.CustomerPhone,
 			&dataRow.CustomerEmail,
 			&dataRow.CustomerAddress,
+			&dataRow.CreatedAt,
+			&dataRow.UpdatedAt,
 			&dataRow.TotalInvoicePrice); err != nil {
 			return nil, err
 		}

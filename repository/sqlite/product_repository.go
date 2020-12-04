@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/model"
+	"time"
 )
 
 type ProductRepo struct {
@@ -97,11 +98,11 @@ func (pr *ProductRepo) AddProductStock(addQuantity *model.ProductIncrease) (*mod
 	}
 
 	result, err :=
-		conn.Prepare("insert into product_increases(product_id, quantity, user_id) values (?, ?, ?)")
+		conn.Prepare("insert into product_increases(product_id, quantity, user_id, created_at, updated_at) values (?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(addQuantity.ProductID, addQuantity.Quantity, addQuantity.UserID)
+	getID, err := result.Exec(addQuantity.ProductID, addQuantity.Quantity, addQuantity.UserID, time.Now(), time.Now())
 	if err != nil {
 		return nil, err
 	}

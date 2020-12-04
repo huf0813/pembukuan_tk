@@ -24,5 +24,7 @@ type InvoiceWithDetail struct {
 	CustomerEmail     string                 `json:"customer_email"`
 	CustomerAddress   string                 `json:"customer_address"`
 	TotalInvoicePrice string                 `json:"total_invoice_price"`
+	CreatedAt         string                 `json:"created_at"`
+	UpdatedAt         string                 `json:"updated_at"`
 	Products          []ProductInsideInvoice `json:"products"`
 }
