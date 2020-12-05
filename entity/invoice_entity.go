@@ -28,3 +28,7 @@ type InvoiceWithDetail struct {
 	UpdatedAt         string                 `json:"updated_at"`
 	Products          []ProductInsideInvoice `json:"products"`
 }
+
+type InvoiceWithDetailReq struct {
+	InvoiceID int `json:"invoice_id"`
+}

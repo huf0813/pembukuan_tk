@@ -29,7 +29,7 @@ func (ir *InvoiceRepo) AddInvoice(newInvoice *entity.Invoice) (*entity.Invoice, 
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID, time.Now(), time.Now().Unix())
+	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID, time.Now().Unix(), time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}

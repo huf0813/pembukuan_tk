@@ -45,3 +45,23 @@ func (ictr *InvoiceCTR) GetInvoices(w http.ResponseWriter, _ *http.Request) {
 		http.StatusOK, "success", "", result)
 	return
 }
+
+func (ictr *InvoiceCTR) GetInvoiceByID(w http.ResponseWriter, r *http.Request) {
+	var invoiceDetailReq entity.InvoiceWithDetailReq
+	if err := json.NewDecoder(r.Body).Decode(&invoiceDetailReq); err != nil {
+		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	result, err := ictr.InvoiceUseCase.GetInvoiceByID(invoiceDetailReq.InvoiceID)
+	if err != nil {
+		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
+	return
+}

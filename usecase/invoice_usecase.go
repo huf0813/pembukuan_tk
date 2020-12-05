@@ -19,6 +19,19 @@ func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
 	return result, nil
 }
 
+func (iuc *InvoiceUseCase) GetInvoiceByID(invoiceID int) (*entity.InvoiceWithDetail, error) {
+	result, err := iuc.InvoiceRepo.GetInvoices()
+	if err != nil {
+		return nil, err
+	}
+	for _, val := range result {
+		if val.ID == invoiceID {
+			return &val, nil
+		}
+	}
+	return nil, errors.New("invoice was not found")
+}
+
 func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) error {
 	err := errors.New("cannot pass the validation")
 	if newInvoiceReq.ListProduct == nil {

@@ -43,6 +43,7 @@ func (r *Route) Routes() *mux.Router {
 	route.Handle("/products/stock", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
 	route.Handle("/invoice", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.AddNewInvoice))).Methods("POST")
 	route.Handle("/invoice", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.GetInvoices))).Methods("GET")
+	route.Handle("/invoice/detail", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.InvoiceCTR.GetInvoiceByID))).Methods("POST")
 
 	// admins
 	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")
@@ -55,6 +56,7 @@ func (r *Route) Routes() *mux.Router {
 	route.Handle("/admin/products/stock", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.AddProductStock))).Methods("POST")
 	route.Handle("/admin/invoice", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.InvoiceCTR.AddNewInvoice))).Methods("POST")
 	route.Handle("/admin/invoice", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.InvoiceCTR.GetInvoices))).Methods("GET")
+	route.Handle("/admin/invoice/detail", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.InvoiceCTR.GetInvoiceByID))).Methods("POST")
 	route.Handle("/admin/users", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.FetchUsers))).Methods("GET")
 	route.Handle("/admin/users", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.AddUser))).Methods("POST")
 	route.Handle("/admin/users", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.UserCTR.EditedUser))).Methods("PUT")
