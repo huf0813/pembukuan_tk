@@ -15,11 +15,12 @@ type AuthUseCase struct {
 }
 
 type AuthUseCaseInterface interface {
-	ValidateUser(user *entity.UserReq) error
-	Login(userAuth *entity.UserReq) (*entity.Token, error)
+	LoginValidation(user *entity.UserReq) error
+	Login(userAuth *entity.UserReq) (*entity.TokenExtract, error)
+	CheckTokenExpired(token string) error
 }
 
-func (auc *AuthUseCase) ValidateUser(user *entity.UserReq) error {
+func (auc *AuthUseCase) LoginValidation(user *entity.UserReq) error {
 	if user.Username == "" || user.Password == "" {
 		return errors.New("field is empty")
 	}
@@ -27,7 +28,7 @@ func (auc *AuthUseCase) ValidateUser(user *entity.UserReq) error {
 }
 
 func (auc *AuthUseCase) Login(userAuth *entity.UserReq) (*entity.TokenExtract, error) {
-	if err := auc.ValidateUser(userAuth); err != nil {
+	if err := auc.LoginValidation(userAuth); err != nil {
 		return nil, err
 	}
 
@@ -45,4 +46,11 @@ func (auc *AuthUseCase) Login(userAuth *entity.UserReq) (*entity.TokenExtract, e
 	}
 
 	return result, nil
+}
+
+func (auc *AuthUseCase) CheckTokenExpired(token string) error {
+	if _, err := auc.Auth.VerifyToken(token); err != nil {
+		return err
+	}
+	return nil
 }

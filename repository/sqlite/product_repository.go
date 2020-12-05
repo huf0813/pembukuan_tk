@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/entity"
-	"time"
 )
 
 type ProductRepo struct {
@@ -110,71 +109,5 @@ func (pr *ProductRepo) EditProductByID(editedProduct *entity.Product) (*entity.P
 		ID:    editedProduct.ID,
 		Name:  editedProduct.Name,
 		Price: editedProduct.Price,
-	}, nil
-}
-
-func (pr *ProductRepo) AddProductStock(addQuantity *entity.ProductIncrease) (*entity.ProductIncrease, error) {
-	conn := pr.SqlConn.SqliteConn()
-	defer func() {
-		if err := conn.Close(); err != nil {
-			panic(err)
-		}
-	}()
-	if conn == nil {
-		return nil, errors.New("connection failed to db")
-	}
-
-	result, err :=
-		conn.Prepare("insert into product_increases(product_id, quantity, user_id, created_at, updated_at) values (?, ?, ?, ?, ?)")
-	if err != nil {
-		return nil, err
-	}
-	getID, err := result.Exec(addQuantity.ProductID, addQuantity.Quantity, addQuantity.UserID, time.Now(), time.Now())
-	if err != nil {
-		return nil, err
-	}
-	lastInsertedID, err := getID.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	return &entity.ProductIncrease{
-		ID:        int(lastInsertedID),
-		ProductID: addQuantity.ProductID,
-		Quantity:  addQuantity.Quantity,
-		UserID:    addQuantity.UserID,
-	}, nil
-}
-
-func (pr *ProductRepo) DecProductStock(decQuantity *entity.ProductDec) (*entity.ProductDec, error) {
-	conn := pr.SqlConn.SqliteConn()
-	defer func() {
-		if err := conn.Close(); err != nil {
-			panic(err)
-		}
-	}()
-	if conn == nil {
-		return nil, errors.New("connection failed to db")
-	}
-
-	result, err :=
-		conn.Prepare("insert into product_decreases(product_id, quantity, invoice_id) values (?, ?, ?)")
-	if err != nil {
-		return nil, err
-	}
-	getID, err := result.Exec(decQuantity.ProductID, decQuantity.Quantity, decQuantity.InvoiceID)
-	if err != nil {
-		return nil, err
-	}
-	lastInsertedID, err := getID.LastInsertId()
-	if err != nil {
-		return nil, err
-	}
-
-	return &entity.ProductDec{
-		ID:        int(lastInsertedID),
-		ProductID: decQuantity.ProductID,
-		Quantity:  decQuantity.Quantity,
-		InvoiceID: decQuantity.InvoiceID,
 	}, nil
 }

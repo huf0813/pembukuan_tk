@@ -17,7 +17,7 @@ func (pctr *ProductCTR) GetProducts(w http.ResponseWriter, _ *http.Request) {
 	result, err := pctr.ProductUseCase.GetProducts()
 	if err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
@@ -29,14 +29,14 @@ func (pctr *ProductCTR) AddProduct(w http.ResponseWriter, r *http.Request) {
 	var newProduct entity.Product
 	if err := json.NewDecoder(r.Body).Decode(&newProduct); err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusBadRequest, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
 	result, err := pctr.ProductUseCase.AddProduct(&newProduct)
 	if err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
@@ -48,14 +48,14 @@ func (pctr *ProductCTR) EditProduct(w http.ResponseWriter, r *http.Request) {
 	var editedProduct entity.Product
 	if err := json.NewDecoder(r.Body).Decode(&editedProduct); err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusBadRequest, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
 	result, err := pctr.ProductUseCase.EditProduct(&editedProduct)
 	if err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
@@ -67,14 +67,14 @@ func (pctr *ProductCTR) AddProductStock(w http.ResponseWriter, r *http.Request) 
 	var addProductStock *entity.ProductIncrease
 	if err := json.NewDecoder(r.Body).Decode(&addProductStock); err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusBadRequest, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
 	result, err := pctr.ProductUseCase.AddProductStock(addProductStock)
 	if err != nil {
 		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",

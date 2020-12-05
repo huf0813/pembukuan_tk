@@ -1,14 +1,12 @@
 package ctr
 
 import (
-	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
 )
 
 type AdminCTR struct {
-	Res          customJSON.JSONCustom
-	AdminUseCase usecase.AdminUseCase
+	Res customJSON.JSONCustom
 }
 
 type AdminCTRInterface interface {
@@ -16,5 +14,5 @@ type AdminCTRInterface interface {
 }
 
 func (ac *AdminCTR) DashboardAdmin(w http.ResponseWriter, _ *http.Request) {
-	ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "", "welcome to admin dashboard")
+	ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "welcome to admin dashboard", "")
 }

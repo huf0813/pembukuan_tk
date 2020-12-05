@@ -11,6 +11,14 @@ type InvoiceUseCase struct {
 	ProductUseCase ProductUseCase
 }
 
+func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
+	result, err := iuc.InvoiceRepo.GetInvoices()
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) error {
 	err := errors.New("cannot pass the validation")
 	if newInvoiceReq.ListProduct == nil {
@@ -28,7 +36,7 @@ func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) e
 	return nil
 }
 
-func (iuc *InvoiceUseCase) ProductDecValidation(newProdDec *entity.ProductDec) error {
+func (iuc *InvoiceUseCase) InvoiceProductDecValidation(newProdDec *entity.ProductDec) error {
 	if newProdDec.Quantity <= 0 {
 		return errors.New("quantity cannot be less than equal zero")
 	}
@@ -72,7 +80,7 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity
 			Quantity:  val.Qty,
 			InvoiceID: resultInvoice.ID,
 		}
-		if err := iuc.ProductDecValidation(obj); err != nil {
+		if err := iuc.InvoiceProductDecValidation(obj); err != nil {
 			return nil, err
 		}
 		if _, err := iuc.ProductUseCase.DecProductStock(obj); err != nil {
@@ -85,12 +93,4 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity
 		CustomerID: newInvoiceReq.CustomerID,
 		UserID:     newInvoiceReq.UserID,
 	}, nil
-}
-
-func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
-	result, err := iuc.InvoiceRepo.GetInvoices()
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
 }

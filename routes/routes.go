@@ -30,6 +30,7 @@ func (r *Route) Routes() *mux.Router {
 
 	// auth
 	route.HandleFunc("/login", r.AuthCTR.Login).Methods("POST")
+	route.HandleFunc("/token/expired", r.AuthCTR.CheckToken).Methods("POST")
 
 	// users
 	route.Handle("/dashboard", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.DashboardUser))).Methods("GET")

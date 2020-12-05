@@ -17,14 +17,14 @@ func (ictr *InvoiceCTR) AddNewInvoice(w http.ResponseWriter, r *http.Request) {
 	var invoiceReq entity.InvoiceReq
 	if err := json.NewDecoder(r.Body).Decode(&invoiceReq); err != nil {
 		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusBadRequest, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
 	result, err := ictr.InvoiceUseCase.AddInvoice(&invoiceReq)
 	if err != nil {
 		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
@@ -37,7 +37,7 @@ func (ictr *InvoiceCTR) GetInvoices(w http.ResponseWriter, _ *http.Request) {
 	result, err := ictr.InvoiceUseCase.GetInvoices()
 	if err != nil {
 		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-			http.StatusInternalServerError, "error", err.Error(), nil)
+			http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
