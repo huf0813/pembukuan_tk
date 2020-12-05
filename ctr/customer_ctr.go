@@ -16,6 +16,7 @@ type CustomerCTR struct {
 type CustomerCTRInterface interface {
 	FetchCustomers(w http.ResponseWriter, _ *http.Request)
 	CustomerRegister(w http.ResponseWriter, r *http.Request)
+	EditCustomer(w http.ResponseWriter, r *http.Request)
 }
 
 func (cc *CustomerCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
@@ -35,12 +36,38 @@ func (cc *CustomerCTR) CustomerRegister(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	insertedCustomer, err := cc.CustomerUseCase.AddCustomer(newCustomer.Name, newCustomer.Phone, newCustomer.Email, newCustomer.Address)
+	insertedCustomer, err := cc.CustomerUseCase.AddCustomer(newCustomer.Name,
+		newCustomer.Phone,
+		newCustomer.Email,
+		newCustomer.Address)
 	if err != nil {
 		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
 		return
 	}
 
 	cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "success", "inserted successfully", insertedCustomer)
+	return
+}
+
+func (cc *CustomerCTR) EditCustomer(w http.ResponseWriter, r *http.Request) {
+	var editCustomer entity.Customer
+	if err := json.NewDecoder(r.Body).Decode(&editCustomer); err != nil {
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	updatedCustomer, err := cc.CustomerUseCase.EditCustomer(editCustomer.Name,
+		editCustomer.Phone,
+		editCustomer.Email,
+		editCustomer.Address,
+		editCustomer.ID)
+	if err != nil {
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+	cc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success",
+		"inserted successfully",
+		updatedCustomer)
 	return
 }

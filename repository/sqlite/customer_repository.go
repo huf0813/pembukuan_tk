@@ -94,21 +94,16 @@ func (cr *CustomerRepo) EditCustomer(name, phone, email, address string, custome
 	}
 
 	result, err :=
-		conn.Prepare("insert into customers(name, phone, email, address) values (?, ?, ?, ?)")
+		conn.Prepare("update customers set name=?, phone=?, email=?, address=? where id=?")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(name, phone, email, address)
-	if err != nil {
-		return nil, err
-	}
-	lastInsertedID, err := getID.LastInsertId()
-	if err != nil {
+	if _, err := result.Exec(name, phone, email, address, customerID); err != nil {
 		return nil, err
 	}
 
 	return &entity.Customer{
-		ID:      int(lastInsertedID),
+		ID:      customerID,
 		Name:    name,
 		Phone:   phone,
 		Email:   email,

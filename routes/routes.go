@@ -36,6 +36,7 @@ func (r *Route) Routes() *mux.Router {
 	route.Handle("/dashboard", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.UserCTR.DashboardUser))).Methods("GET")
 	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.CustomerCTR.CustomerRegister))).Methods("POST")
 	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.CustomerCTR.FetchCustomers))).Methods("GET")
+	route.Handle("/customers", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.CustomerCTR.EditCustomer))).Methods("PUT")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.GetProducts))).Methods("GET")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/products", r.Auth.TokenMiddlewareIsUser(http.HandlerFunc(r.ProductCTR.EditProduct))).Methods("PUT")
@@ -45,8 +46,9 @@ func (r *Route) Routes() *mux.Router {
 
 	// admins
 	route.Handle("/admin/dashboard", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.AdminCTR.DashboardAdmin))).Methods("GET")
-	route.Handle("/admin/customers/register", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.CustomerRegister))).Methods("POST")
+	route.Handle("/admin/customers", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.CustomerRegister))).Methods("POST")
 	route.Handle("/admin/customers", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.FetchCustomers))).Methods("GET")
+	route.Handle("/admin/customers", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.CustomerCTR.EditCustomer))).Methods("PUT")
 	route.Handle("/admin/products", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.GetProducts))).Methods("GET")
 	route.Handle("/admin/products", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.AddProduct))).Methods("POST")
 	route.Handle("/admin/products", r.Auth.TokenMiddlewareIsAdmin(http.HandlerFunc(r.ProductCTR.EditProduct))).Methods("PUT")
