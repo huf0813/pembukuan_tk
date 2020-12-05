@@ -1,8 +1,8 @@
-package model
+package entity
 
-type ProductIncrease struct {
+type ProductDec struct {
 	ID        int `json:"id"`
 	ProductID int `json:"product_id"`
 	Quantity  int `json:"quantity"`
-	UserID    int `json:"user_id"`
+	InvoiceID int `json:"invoice_id"`
 }

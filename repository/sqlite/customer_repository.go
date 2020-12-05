@@ -3,20 +3,20 @@ package sqlite
 import (
 	"errors"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 )
 
 type CustomerRepo struct {
-	CustomerModel model.Customer
+	CustomerModel entity.Customer
 	SqlConn       sqlite.ConnSqlite
 }
 
 type CustomerRepoInterface interface {
-	GetCustomers() ([]model.Customer, error)
-	AddCustomer(name, phone, email, address string) (*model.Customer, error)
+	GetCustomers() ([]entity.Customer, error)
+	AddCustomer(name, phone, email, address string) (*entity.Customer, error)
 }
 
-func (cr *CustomerRepo) GetCustomers() ([]model.Customer, error) {
+func (cr *CustomerRepo) GetCustomers() ([]entity.Customer, error) {
 	conn := cr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -32,9 +32,9 @@ func (cr *CustomerRepo) GetCustomers() ([]model.Customer, error) {
 		return nil, err
 	}
 
-	var result []model.Customer
+	var result []entity.Customer
 	for rows.Next() {
-		var dataRow model.Customer
+		var dataRow entity.Customer
 		if err := rows.Scan(&dataRow.ID,
 			&dataRow.Name,
 			&dataRow.Phone,
@@ -48,7 +48,7 @@ func (cr *CustomerRepo) GetCustomers() ([]model.Customer, error) {
 	return result, nil
 }
 
-func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*model.Customer, error) {
+func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*entity.Customer, error) {
 	conn := cr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -73,7 +73,7 @@ func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*model.
 		return nil, err
 	}
 
-	return &model.Customer{
+	return &entity.Customer{
 		ID:      int(lastInsertedID),
 		Name:    name,
 		Phone:   phone,

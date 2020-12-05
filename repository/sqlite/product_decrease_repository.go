@@ -4,14 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 )
 
 type ProductDecreaseRepo struct {
 	SqlConn sqlite.ConnSqlite
 }
 
-func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]model.ProductInsideInvoice, error) {
+func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]entity.ProductInsideInvoice, error) {
 	conn := pdr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -29,9 +29,9 @@ func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]model.ProductInsideInvo
 		return nil, err
 	}
 
-	var result []model.ProductInsideInvoice
+	var result []entity.ProductInsideInvoice
 	for rows.Next() {
-		var dataRow model.ProductInsideInvoice
+		var dataRow entity.ProductInsideInvoice
 		if err := rows.Scan(&dataRow.ProductName,
 			&dataRow.ProductPrice,
 			&dataRow.ProductQty,
@@ -43,7 +43,7 @@ func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]model.ProductInsideInvo
 	return result, nil
 }
 
-func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]model.ProductInsideInvoice, error) {
+func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]entity.ProductInsideInvoice, error) {
 	conn := pdr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -61,9 +61,9 @@ func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]model.P
 		return nil, err
 	}
 
-	var result []model.ProductInsideInvoice
+	var result []entity.ProductInsideInvoice
 	for rows.Next() {
-		var dataRow model.ProductInsideInvoice
+		var dataRow entity.ProductInsideInvoice
 		if err := rows.Scan(&dataRow.ProductName,
 			&dataRow.ProductPrice,
 			&dataRow.ProductQty,

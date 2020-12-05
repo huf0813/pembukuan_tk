@@ -2,12 +2,12 @@ package customJSON
 
 import (
 	"encoding/json"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"net/http"
 )
 
 type JSONCustom struct {
-	Payload model.Payload
+	Payload entity.Payload
 }
 
 type JSONCustomInterspace interface {

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type InvoiceRepo struct {
 	ProductDecRepo ProductDecreaseRepo
 }
 
-func (ir *InvoiceRepo) AddInvoice(newInvoice *model.Invoice) (*model.Invoice, error) {
+func (ir *InvoiceRepo) AddInvoice(newInvoice *entity.Invoice) (*entity.Invoice, error) {
 	conn := ir.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -29,7 +29,7 @@ func (ir *InvoiceRepo) AddInvoice(newInvoice *model.Invoice) (*model.Invoice, er
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID, time.Now().Unix(), time.Now().Unix())
+	getID, err := result.Exec(newInvoice.CustomerID, newInvoice.UserID, time.Now(), time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -38,14 +38,14 @@ func (ir *InvoiceRepo) AddInvoice(newInvoice *model.Invoice) (*model.Invoice, er
 		return nil, err
 	}
 
-	return &model.Invoice{
+	return &entity.Invoice{
 		ID:         int(lastInsertedID),
 		CustomerID: newInvoice.CustomerID,
 		UserID:     newInvoice.UserID,
 	}, nil
 }
 
-func (ir *InvoiceRepo) GetInvoices() ([]model.InvoiceWithDetail, error) {
+func (ir *InvoiceRepo) GetInvoices() ([]entity.InvoiceWithDetail, error) {
 	conn := ir.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -64,9 +64,9 @@ func (ir *InvoiceRepo) GetInvoices() ([]model.InvoiceWithDetail, error) {
 		return nil, err
 	}
 
-	var result []model.InvoiceWithDetail
+	var result []entity.InvoiceWithDetail
 	for rows.Next() {
-		var dataRow model.InvoiceWithDetail
+		var dataRow entity.InvoiceWithDetail
 		if err := rows.Scan(&dataRow.ID,
 			&dataRow.CustomerName,
 			&dataRow.CustomerPhone,

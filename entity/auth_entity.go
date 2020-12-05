@@ -1,4 +1,4 @@
-package model
+package entity
 
 type UserReq struct {
 	Username string `json:"username"`

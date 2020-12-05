@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"time"
 )
 
@@ -13,7 +13,7 @@ type ProductRepo struct {
 	SqlConn sqlite.ConnSqlite
 }
 
-func (pr *ProductRepo) GetProducts() ([]model.ProductStock, error) {
+func (pr *ProductRepo) GetProducts() ([]entity.ProductStock, error) {
 	conn := pr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -32,9 +32,9 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStock, error) {
 		return nil, err
 	}
 
-	var result []model.ProductStock
+	var result []entity.ProductStock
 	for rows.Next() {
-		var dataRowProduct model.ProductStock
+		var dataRowProduct entity.ProductStock
 		var qtyProduct sql.NullInt64
 		var qtyInvoice sql.NullInt64
 		if err := rows.Scan(&dataRowProduct.ID,
@@ -54,7 +54,7 @@ func (pr *ProductRepo) GetProducts() ([]model.ProductStock, error) {
 	return result, nil
 }
 
-func (pr *ProductRepo) AddProduct(newUser *model.Product) (*model.Product, error) {
+func (pr *ProductRepo) AddProduct(newUser *entity.Product) (*entity.Product, error) {
 	conn := pr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -79,14 +79,41 @@ func (pr *ProductRepo) AddProduct(newUser *model.Product) (*model.Product, error
 		return nil, err
 	}
 
-	return &model.Product{
+	return &entity.Product{
 		ID:    int(lastInsertedID),
 		Name:  newUser.Name,
 		Price: newUser.Price,
 	}, nil
 }
 
-func (pr *ProductRepo) AddProductStock(addQuantity *model.ProductIncrease) (*model.ProductIncrease, error) {
+func (pr *ProductRepo) EditProductByID(editedProduct *entity.Product) (*entity.Product, error) {
+	conn := pr.SqlConn.SqliteConn()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return nil, errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("update products set name=?, price=? where id=?")
+	if err != nil {
+		return nil, err
+	}
+	if _, err := result.Exec(editedProduct.Name, editedProduct.Price, editedProduct.ID); err != nil {
+		return nil, err
+	}
+
+	return &entity.Product{
+		ID:    editedProduct.ID,
+		Name:  editedProduct.Name,
+		Price: editedProduct.Price,
+	}, nil
+}
+
+func (pr *ProductRepo) AddProductStock(addQuantity *entity.ProductIncrease) (*entity.ProductIncrease, error) {
 	conn := pr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -111,7 +138,7 @@ func (pr *ProductRepo) AddProductStock(addQuantity *model.ProductIncrease) (*mod
 		return nil, err
 	}
 
-	return &model.ProductIncrease{
+	return &entity.ProductIncrease{
 		ID:        int(lastInsertedID),
 		ProductID: addQuantity.ProductID,
 		Quantity:  addQuantity.Quantity,
@@ -119,7 +146,7 @@ func (pr *ProductRepo) AddProductStock(addQuantity *model.ProductIncrease) (*mod
 	}, nil
 }
 
-func (pr *ProductRepo) DecProductStock(decQuantity *model.ProductDec) (*model.ProductDec, error) {
+func (pr *ProductRepo) DecProductStock(decQuantity *entity.ProductDec) (*entity.ProductDec, error) {
 	conn := pr.SqlConn.SqliteConn()
 	defer func() {
 		if err := conn.Close(); err != nil {
@@ -144,7 +171,7 @@ func (pr *ProductRepo) DecProductStock(decQuantity *model.ProductDec) (*model.Pr
 		return nil, err
 	}
 
-	return &model.ProductDec{
+	return &entity.ProductDec{
 		ID:        int(lastInsertedID),
 		ProductID: decQuantity.ProductID,
 		Quantity:  decQuantity.Quantity,

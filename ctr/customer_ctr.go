@@ -2,7 +2,7 @@ package ctr
 
 import (
 	"encoding/json"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
@@ -29,7 +29,7 @@ func (cc *CustomerCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
 }
 
 func (cc *CustomerCTR) CustomerRegister(w http.ResponseWriter, r *http.Request) {
-	var newCustomer model.Customer
+	var newCustomer entity.Customer
 	if err := json.NewDecoder(r.Body).Decode(&newCustomer); err != nil {
 		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusBadRequest, "error", err.Error(), nil)
 		return

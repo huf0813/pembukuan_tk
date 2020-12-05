@@ -2,7 +2,7 @@ package ctr
 
 import (
 	"encoding/json"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
@@ -14,7 +14,7 @@ type InvoiceCTR struct {
 }
 
 func (ictr *InvoiceCTR) AddNewInvoice(w http.ResponseWriter, r *http.Request) {
-	var invoiceReq model.InvoiceReq
+	var invoiceReq entity.InvoiceReq
 	if err := json.NewDecoder(r.Body).Decode(&invoiceReq); err != nil {
 		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
 			http.StatusBadRequest, "error", err.Error(), nil)

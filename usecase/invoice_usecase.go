@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"errors"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/repository/sqlite"
 )
 
@@ -11,7 +11,7 @@ type InvoiceUseCase struct {
 	ProductUseCase ProductUseCase
 }
 
-func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *model.InvoiceReq) error {
+func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) error {
 	err := errors.New("cannot pass the validation")
 	if newInvoiceReq.ListProduct == nil {
 		return err
@@ -28,7 +28,7 @@ func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *model.InvoiceReq) er
 	return nil
 }
 
-func (iuc *InvoiceUseCase) ProductDecValidation(newProdDec *model.ProductDec) error {
+func (iuc *InvoiceUseCase) ProductDecValidation(newProdDec *entity.ProductDec) error {
 	if newProdDec.Quantity <= 0 {
 		return errors.New("quantity cannot be less than equal zero")
 	}
@@ -52,11 +52,11 @@ func (iuc *InvoiceUseCase) ProductDecValidation(newProdDec *model.ProductDec) er
 	return nil
 }
 
-func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *model.InvoiceReq) (*model.Invoice, error) {
+func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity.Invoice, error) {
 	if err := iuc.InvoiceValidation(newInvoiceReq); err != nil {
 		return nil, err
 	}
-	newInvoice := &model.Invoice{
+	newInvoice := &entity.Invoice{
 		UserID:     newInvoiceReq.UserID,
 		CustomerID: newInvoiceReq.CustomerID,
 	}
@@ -67,7 +67,7 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *model.InvoiceReq) (*model.I
 	}
 
 	for _, val := range newInvoiceReq.ListProduct {
-		obj := &model.ProductDec{
+		obj := &entity.ProductDec{
 			ProductID: val.ProductID,
 			Quantity:  val.Qty,
 			InvoiceID: resultInvoice.ID,
@@ -80,14 +80,14 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *model.InvoiceReq) (*model.I
 		}
 	}
 
-	return &model.Invoice{
+	return &entity.Invoice{
 		ID:         resultInvoice.ID,
 		CustomerID: newInvoiceReq.CustomerID,
 		UserID:     newInvoiceReq.UserID,
 	}, nil
 }
 
-func (iuc *InvoiceUseCase) GetInvoices() ([]model.InvoiceWithDetail, error) {
+func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
 	result, err := iuc.InvoiceRepo.GetInvoices()
 	if err != nil {
 		return nil, err

@@ -1,4 +1,4 @@
-package model
+package entity
 
 type Invoice struct {
 	ID         int `json:"id"`

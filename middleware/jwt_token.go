@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	mdl "github.com/huf0813/pembukuan_tk/model"
+	mdl "github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"github.com/joho/godotenv"
 	"net/http"

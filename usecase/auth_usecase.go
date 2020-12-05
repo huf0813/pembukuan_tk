@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"errors"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/middleware"
-	"github.com/huf0813/pembukuan_tk/model"
 	"github.com/huf0813/pembukuan_tk/repository/sqlite"
 	"github.com/huf0813/pembukuan_tk/utils"
 )
@@ -15,18 +15,18 @@ type AuthUseCase struct {
 }
 
 type AuthUseCaseInterface interface {
-	ValidateUser(user *model.UserReq) error
-	Login(userAuth *model.UserReq) (*model.Token, error)
+	ValidateUser(user *entity.UserReq) error
+	Login(userAuth *entity.UserReq) (*entity.Token, error)
 }
 
-func (auc *AuthUseCase) ValidateUser(user *model.UserReq) error {
+func (auc *AuthUseCase) ValidateUser(user *entity.UserReq) error {
 	if user.Username == "" || user.Password == "" {
 		return errors.New("field is empty")
 	}
 	return nil
 }
 
-func (auc *AuthUseCase) Login(userAuth *model.UserReq) (*model.TokenExtract, error) {
+func (auc *AuthUseCase) Login(userAuth *entity.UserReq) (*entity.TokenExtract, error) {
 	if err := auc.ValidateUser(userAuth); err != nil {
 		return nil, err
 	}

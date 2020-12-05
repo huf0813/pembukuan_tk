@@ -2,7 +2,7 @@ package ctr
 
 import (
 	"encoding/json"
-	"github.com/huf0813/pembukuan_tk/model"
+	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/usecase"
 	"github.com/huf0813/pembukuan_tk/utils/delivery/customJSON"
 	"net/http"
@@ -18,7 +18,7 @@ type AuthInterface interface {
 }
 
 func (ac *AuthCTR) Login(w http.ResponseWriter, r *http.Request) {
-	var authLogin model.UserReq
+	var authLogin entity.UserReq
 	if err := json.NewDecoder(r.Body).Decode(&authLogin); err != nil {
 		ac.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
 		return
