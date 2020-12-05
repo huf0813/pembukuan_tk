@@ -30,7 +30,7 @@ func (ur *UserRepo) GetUsers() ([]entity.User, error) {
 		return nil, errors.New("connection failed to db")
 	}
 
-	rows, err := conn.Query("select id, user_type_id, username, password from users")
+	rows, err := conn.Query("select id, user_type_id, username, password from users where user_type_id=2")
 	if err != nil {
 		return nil, err
 	}
