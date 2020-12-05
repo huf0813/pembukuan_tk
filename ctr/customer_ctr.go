@@ -67,7 +67,7 @@ func (cc *CustomerCTR) EditCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 	cc.Res.CustomJSONRes(w, "Content-Type", "application/json",
 		http.StatusOK, "success",
-		"inserted successfully",
+		"edited successfully",
 		updatedCustomer)
 	return
 }

@@ -2,8 +2,12 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/repository/sqlite"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type InvoiceUseCase struct {
@@ -106,4 +110,61 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity
 		CustomerID: newInvoiceReq.CustomerID,
 		UserID:     newInvoiceReq.UserID,
 	}, nil
+}
+
+func (iuc *InvoiceUseCase) GetStatistics(year string) ([]entity.StatisticPerYear, error) {
+	result, err := iuc.InvoiceRepo.GetInvoices()
+	if err != nil {
+		return nil, err
+	}
+	profitPerMonth := []entity.StatisticPerYear{
+		{fmt.Sprintf("%s-01", year), 0},
+		{fmt.Sprintf("%s-02", year), 0},
+		{fmt.Sprintf("%s-03", year), 0},
+		{fmt.Sprintf("%s-04", year), 0},
+		{fmt.Sprintf("%s-05", year), 0},
+		{fmt.Sprintf("%s-06", year), 0},
+		{fmt.Sprintf("%s-07", year), 0},
+		{fmt.Sprintf("%s-08", year), 0},
+		{fmt.Sprintf("%s-09", year), 0},
+		{fmt.Sprintf("%s-10", year), 0},
+		{fmt.Sprintf("%s-11", year), 0},
+		{fmt.Sprintf("%s-12", year), 0},
+	}
+	for _, val := range result {
+		convertInt64, err := iuc.StringToInt64(val.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		convertYnM, err := iuc.GetYnM(convertInt64)
+		if err != nil {
+			return nil, err
+		}
+		for i, perM := range profitPerMonth {
+			res, err := iuc.StringToInt64(val.TotalInvoicePrice)
+			if err != nil {
+				return nil, err
+			}
+			if convertYnM == perM.YearAndMon {
+				profitPerMonth[i].Profit += res
+			}
+		}
+	}
+	return profitPerMonth, nil
+}
+
+func (iuc *InvoiceUseCase) StringToInt64(val string) (int64, error) {
+	if n, err := strconv.ParseInt(val, 10, 64); err == nil {
+		return n, nil
+	} else {
+		return 0, err
+	}
+}
+
+func (iuc *InvoiceUseCase) GetYnM(timeUnix int64) (string, error) {
+	timeT := time.Unix(timeUnix, 0).String()
+	getYMD := strings.Split(timeT, " ")[0]
+	getYM := strings.Split(getYMD, "-")[:2]
+	stringYM := fmt.Sprintf("%s-%s", getYM[0], getYM[1])
+	return stringYM, nil
 }

@@ -65,3 +65,23 @@ func (ictr *InvoiceCTR) GetInvoiceByID(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK, "success", "", result)
 	return
 }
+
+func (ictr *InvoiceCTR) GetStatistics(w http.ResponseWriter, r *http.Request) {
+	var invoiceReq entity.StatisticPerYearReq
+	if err := json.NewDecoder(r.Body).Decode(&invoiceReq); err != nil {
+		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	result, err := ictr.InvoiceUseCase.GetStatistics(invoiceReq.Year)
+	if err != nil {
+		ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	ictr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
+	return
+}
