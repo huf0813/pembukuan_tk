@@ -112,7 +112,7 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity
 	}, nil
 }
 
-func (iuc *InvoiceUseCase) GetStatistics(year string) ([]entity.StatisticPerYear, error) {
+func (iuc *InvoiceUseCase) GetStatistics(year string) (*entity.StatisticPerMonRes, error) {
 	result, err := iuc.InvoiceRepo.GetInvoices()
 	if err != nil {
 		return nil, err
@@ -150,7 +150,23 @@ func (iuc *InvoiceUseCase) GetStatistics(year string) ([]entity.StatisticPerYear
 			}
 		}
 	}
-	return profitPerMonth, nil
+	return &entity.StatisticPerMonRes{
+		Year: year,
+		Detail: []entity.StatisticPerMon{
+			{"january", profitPerMonth[0].Profit},
+			{"february", profitPerMonth[1].Profit},
+			{"march", profitPerMonth[2].Profit},
+			{"april", profitPerMonth[3].Profit},
+			{"may", profitPerMonth[4].Profit},
+			{"june", profitPerMonth[5].Profit},
+			{"july", profitPerMonth[6].Profit},
+			{"august", profitPerMonth[7].Profit},
+			{"september", profitPerMonth[8].Profit},
+			{"october", profitPerMonth[9].Profit},
+			{"november", profitPerMonth[10].Profit},
+			{"december", profitPerMonth[11].Profit},
+		},
+	}, nil
 }
 
 func (iuc *InvoiceUseCase) StringToInt64(val string) (int64, error) {
