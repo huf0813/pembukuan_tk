@@ -191,7 +191,7 @@ POST -> /statistics
 header : user token
 payload : 
 {
-	"year": "2020"
+	"year": "2019"
 }
 response : 
 {
@@ -519,7 +519,7 @@ POST -> /admin/statistics
 header : admin token
 payload : 
 {
-	"year": "2020"
+	"year": "2019"
 }
 response : 
 {
