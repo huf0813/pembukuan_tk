@@ -1,4 +1,26 @@
-# pembukuan_tk
+# pembukuan_tk API
+
+PembukuanTK is an API for managing your store. Through this API, we hope that small business will grow in positive
+trajectory.
+
+## <b>Architecture</b>
+
+![ARCH](https://raw.githubusercontent.com/bxcodec/go-clean-arch/master/clean-arch.png)
+We are <b>different</b>. Using this Clean Arch by Uncle Bob Martin, we have a chance to create multiple data source and
+multiple delivery. Right now, we provide blazing fast <b>DB SQLITE</b> and delivered by <b>JSON</b>. Also, by using <b>GO + MUX
+Router Helper + JSON Web Token</b>, we can create secure endpoints without excuses. Anyway, Thx
+to [bxcodec](https://github.com/bxcodec/go-clean-arch) has explained this examples.
+
+## <b>How to Run</b>
+
+1. Simply run this command
+
+```
+go run main.go
+```
+
+2. Want to see our deployment on server? go check out this [link](https://pembukuantk.herokuapp.com/)
+3. Upss :scream:, want to see more? come and send us by issues
 
 ## <b>Meet the actors</b>
 
@@ -9,6 +31,8 @@
 ```
 
 ## <b>API without JWT Token</b>
+
+1. Login
 
 ```
 POST -> /login
@@ -31,6 +55,8 @@ response :
 }
 ```
 
+2. Token Checking
+
 ```
 POST -> /token/expired
 header : null
@@ -49,6 +75,7 @@ response :
 ## <b>API USER with JWT Token</b>
 
 1. Get All Products
+
 ```
 GET -> /products
 header : user token
@@ -69,6 +96,7 @@ response :
 ```
 
 2. Get All Customers
+
 ```
 GET -> /customers
 header : user token
@@ -90,6 +118,7 @@ response :
 ```
 
 3. Get All Invoices
+
 ```
 GET -> /invoice
 header : user token
@@ -122,6 +151,7 @@ response :
 ```
 
 4. Get Invoice Detail By ID
+
 ```
 POST -> /invoice/detail
 header : user token
@@ -155,6 +185,7 @@ response :
 ```
 
 5. Get Statistics By Year
+
 ```
 POST -> /statistics
 header : user token
@@ -220,6 +251,7 @@ response :
 ```
 
 6. Input New Invoice With Products
+
 ```
 POST -> /invoice
 header : user token
@@ -247,6 +279,7 @@ response :
 ```
 
 7. Input New Stock for Product
+
 ```
 POST -> /products/stock
 header : user token
@@ -270,6 +303,7 @@ response :
 ```
 
 8. Input New Product
+
 ```
 POST -> /products
 header : user token
@@ -291,6 +325,7 @@ response :
 ```
 
 9. Input New Customer
+
 ```
 POST -> /customers
 header : user token
@@ -316,6 +351,7 @@ response :
 ```
 
 10. Edit Customer By ID
+
 ```
 PUT -> /customers
 header : user token
@@ -342,6 +378,7 @@ response :
 ```
 
 11. Edit Product By ID
+
 ```
 PUT -> /products
 header : user token
@@ -366,6 +403,7 @@ response :
 ## <b>API ADMIN with JWT Token</b>
 
 1. Get All Products
+
 ```
 GET -> /admin/products
 header : admin token
@@ -386,6 +424,7 @@ response :
 ```
 
 2. Get All Customers
+
 ```
 GET -> /admin/customers
 header : admin token
@@ -407,6 +446,7 @@ response :
 ```
 
 3. Get All Invoices
+
 ```
 GET -> /admin/invoice
 header : admin token
@@ -439,6 +479,7 @@ response :
 ```
 
 4. Get Invoice Detail By ID
+
 ```
 POST -> /admin/invoice/detail
 header : admin token
@@ -472,6 +513,7 @@ response :
 ```
 
 5. Get Statistics By Year
+
 ```
 POST -> /admin/statistics
 header : admin token
@@ -537,6 +579,7 @@ response :
 ```
 
 6. Input New Invoice With Products
+
 ```
 POST -> /admin/invoice
 header : admin token
@@ -564,6 +607,7 @@ response :
 ```
 
 7. Input New Stock for Product
+
 ```
 POST -> /admin/products/stock
 header : admin token
@@ -587,6 +631,7 @@ response :
 ```
 
 8. Input New Product
+
 ```
 POST -> /admin/products
 header : admin token
@@ -608,6 +653,7 @@ response :
 ```
 
 9. Input New Customer
+
 ```
 POST -> /admin/customers
 header : admin token
@@ -633,6 +679,7 @@ response :
 ```
 
 10. Edit Customer By ID
+
 ```
 PUT -> /admin/customers
 header : admin token
@@ -659,6 +706,7 @@ response :
 ```
 
 11. Edit Product By ID
+
 ```
 PUT -> /admin/products
 header : admin token
@@ -681,6 +729,7 @@ response :
 ```
 
 12. Get All Users
+
 ```
 GET -> /admin/users
 header : admin token
@@ -707,6 +756,7 @@ response :
 ```
 
 13. Input New User
+
 ```
 POST -> /admin/users
 header : admin token
@@ -729,6 +779,7 @@ response :
 ```
 
 14. Edit User By ID
+
 ```
 PUT -> /admin/users
 header : admin token
@@ -750,3 +801,4 @@ response :
   }
 }
 ```
+
