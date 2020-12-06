@@ -6,7 +6,7 @@ trajectory. This is so cool, isn't it?
 ## <b>Architecture</b>
 
 ![ARCH](https://raw.githubusercontent.com/bxcodec/go-clean-arch/master/clean-arch.png)
-We are <b>different</b>. Using this Clean Arch by Uncle Bob Martin, we have a chance to create multiple data source and
+We are <b>different</b>, not using MVC anymore. Using this Clean Arch by Uncle Bob Martin, we have a chance to create multiple data source and
 multiple delivery. Right now, we provide blazing fast <b>DB SQLITE</b> and delivered by <b>JSON</b>. Also, by using <b>
 GO + MUX Router Helper + JSON Web Token</b>, we can create secure endpoints without excuses. Anyway, Thx
 to [bxcodec](https://github.com/bxcodec/go-clean-arch) has explained this examples.
