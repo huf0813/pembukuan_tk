@@ -367,7 +367,7 @@ response :
 
 1. Get All Products
 ```
-GET -> /products
+GET -> /admin/products
 header : admin token
 payload : null
 response : 
@@ -387,7 +387,7 @@ response :
 
 2. Get All Customers
 ```
-GET -> /customers
+GET -> /admin/customers
 header : admin token
 payload : null
 response : 
@@ -408,7 +408,7 @@ response :
 
 3. Get All Invoices
 ```
-GET -> /invoice
+GET -> /admin/invoice
 header : admin token
 payload : null
 response : 
@@ -440,7 +440,7 @@ response :
 
 4. Get Invoice Detail By ID
 ```
-POST -> /invoice/detail
+POST -> /admin/invoice/detail
 header : admin token
 payload : 
 {
@@ -473,7 +473,7 @@ response :
 
 5. Get Statistics By Year
 ```
-POST -> /statistics
+POST -> /admin/statistics
 header : admin token
 payload : 
 {
@@ -538,7 +538,7 @@ response :
 
 6. Input New Invoice With Products
 ```
-POST -> /invoice
+POST -> /admin/invoice
 header : admin token
 payload : 
 {
@@ -565,7 +565,7 @@ response :
 
 7. Input New Stock for Product
 ```
-POST -> /products/stock
+POST -> /admin/products/stock
 header : admin token
 payload : 
 {
@@ -588,7 +588,7 @@ response :
 
 8. Input New Product
 ```
-POST -> /products
+POST -> /admin/products
 header : admin token
 payload : 
 {
@@ -609,7 +609,7 @@ response :
 
 9. Input New Customer
 ```
-POST -> /customers
+POST -> /admin/customers
 header : admin token
 payload : 
 {
@@ -634,7 +634,7 @@ response :
 
 10. Edit Customer By ID
 ```
-PUT -> /customers
+PUT -> /admin/customers
 header : admin token
 payload : 
 {
@@ -660,7 +660,7 @@ response :
 
 11. Edit Product By ID
 ```
-PUT -> /products
+PUT -> /admin/products
 header : admin token
 payload : 
 {
@@ -682,7 +682,7 @@ response :
 
 12. Get All Users
 ```
-GET -> admin/users
+GET -> /admin/users
 header : admin token
 payload : null
 response : 
@@ -708,7 +708,7 @@ response :
 
 13. Input New User
 ```
-POST -> admin/users
+POST -> /admin/users
 header : admin token
 payload : 
 {
@@ -730,7 +730,7 @@ response :
 
 14. Edit User By ID
 ```
-PUT -> admin/users
+PUT -> /admin/users
 header : admin token
 payload : 
 {
