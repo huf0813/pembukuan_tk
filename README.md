@@ -197,56 +197,59 @@ response :
 {
   "status": "success",
   "message": "",
-  "data": [
-    {
-      "year_and_month": "2019-01",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-02",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-03",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-04",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-05",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-06",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-07",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-08",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-09",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-10",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-11",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-12",
-      "profit": 0
-    }
-  ]
+  "data": {
+    "year": "2020",
+    "detail": [
+      {
+        "mon": "january",
+        "profit": 0
+      },
+      {
+        "mon": "february",
+        "profit": 0
+      },
+      {
+        "mon": "march",
+        "profit": 0
+      },
+      {
+        "mon": "april",
+        "profit": 0
+      },
+      {
+        "mon": "may",
+        "profit": 0
+      },
+      {
+        "mon": "june",
+        "profit": 0
+      },
+      {
+        "mon": "july",
+        "profit": 0
+      },
+      {
+        "mon": "august",
+        "profit": 0
+      },
+      {
+        "mon": "september",
+        "profit": 0
+      },
+      {
+        "mon": "october",
+        "profit": 0
+      },
+      {
+        "mon": "november",
+        "profit": 0
+      },
+      {
+        "mon": "december",
+        "profit": 70000
+      }
+    ]
+  }
 }
 ```
 
@@ -519,62 +522,65 @@ POST -> /admin/statistics
 header : admin token
 payload : 
 {
-	"year": "2019"
+	"year": "2020"
 }
 response : 
 {
   "status": "success",
   "message": "",
-  "data": [
-    {
-      "year_and_month": "2019-01",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-02",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-03",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-04",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-05",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-06",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-07",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-08",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-09",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-10",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-11",
-      "profit": 0
-    },
-    {
-      "year_and_month": "2019-12",
-      "profit": 0
-    }
-  ]
+  "data": {
+    "year": "2020",
+    "detail": [
+      {
+        "mon": "january",
+        "profit": 0
+      },
+      {
+        "mon": "february",
+        "profit": 0
+      },
+      {
+        "mon": "march",
+        "profit": 0
+      },
+      {
+        "mon": "april",
+        "profit": 0
+      },
+      {
+        "mon": "may",
+        "profit": 0
+      },
+      {
+        "mon": "june",
+        "profit": 0
+      },
+      {
+        "mon": "july",
+        "profit": 0
+      },
+      {
+        "mon": "august",
+        "profit": 0
+      },
+      {
+        "mon": "september",
+        "profit": 0
+      },
+      {
+        "mon": "october",
+        "profit": 0
+      },
+      {
+        "mon": "november",
+        "profit": 0
+      },
+      {
+        "mon": "december",
+        "profit": 70000
+      }
+    ]
+  }
 }
 ```
 
