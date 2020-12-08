@@ -12,7 +12,7 @@ type ProductIncreaseRepo struct {
 }
 
 func (pr *ProductRepo) AddProductStock(addQuantity *entity.ProductIncrease) (*entity.ProductIncrease, error) {
-	conn := pr.SqlConn.SqliteConn()
+	conn := pr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)

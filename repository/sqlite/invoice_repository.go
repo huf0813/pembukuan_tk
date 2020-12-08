@@ -14,7 +14,7 @@ type InvoiceRepo struct {
 }
 
 func (ir *InvoiceRepo) AddInvoice(newInvoice *entity.Invoice) (*entity.Invoice, error) {
-	conn := ir.SqlConn.SqliteConn()
+	conn := ir.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -46,7 +46,7 @@ func (ir *InvoiceRepo) AddInvoice(newInvoice *entity.Invoice) (*entity.Invoice, 
 }
 
 func (ir *InvoiceRepo) GetInvoices() ([]entity.InvoiceWithDetail, error) {
-	conn := ir.SqlConn.SqliteConn()
+	conn := ir.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)

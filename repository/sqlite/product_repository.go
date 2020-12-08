@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/entity"
+	"time"
 )
 
 type ProductRepo struct {
@@ -13,7 +14,7 @@ type ProductRepo struct {
 }
 
 func (pr *ProductRepo) GetProducts() ([]entity.ProductStock, error) {
-	conn := pr.SqlConn.SqliteConn()
+	conn := pr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -54,7 +55,7 @@ func (pr *ProductRepo) GetProducts() ([]entity.ProductStock, error) {
 }
 
 func (pr *ProductRepo) AddProduct(newUser *entity.Product) (*entity.Product, error) {
-	conn := pr.SqlConn.SqliteConn()
+	conn := pr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -65,11 +66,11 @@ func (pr *ProductRepo) AddProduct(newUser *entity.Product) (*entity.Product, err
 	}
 
 	result, err :=
-		conn.Prepare("insert into products(name, price) values (?, ?)")
+		conn.Prepare("insert into products(name, price, created_at, updated_at) values (?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newUser.Name, newUser.Price)
+	getID, err := result.Exec(newUser.Name, newUser.Price, time.Now().Unix(), time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +87,7 @@ func (pr *ProductRepo) AddProduct(newUser *entity.Product) (*entity.Product, err
 }
 
 func (pr *ProductRepo) EditProductByID(editedProduct *entity.Product) (*entity.Product, error) {
-	conn := pr.SqlConn.SqliteConn()
+	conn := pr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -97,12 +98,20 @@ func (pr *ProductRepo) EditProductByID(editedProduct *entity.Product) (*entity.P
 	}
 
 	result, err :=
-		conn.Prepare("update products set name=?, price=? where id=?")
+		conn.Prepare("update products set name=?, price=?, updated_at=? where id=?")
 	if err != nil {
 		return nil, err
 	}
-	if _, err := result.Exec(editedProduct.Name, editedProduct.Price, editedProduct.ID); err != nil {
+	edited, err := result.Exec(editedProduct.Name, editedProduct.Price, time.Now().Unix(), editedProduct.ID)
+	if err != nil {
 		return nil, err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+	if effected == 0 {
+		return nil, errors.New("no data edited")
 	}
 
 	return &entity.Product{

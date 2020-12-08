@@ -12,7 +12,7 @@ type ProductDecreaseRepo struct {
 }
 
 func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]entity.ProductInsideInvoice, error) {
-	conn := pdr.SqlConn.SqliteConn()
+	conn := pdr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -44,7 +44,7 @@ func (pdr *ProductDecreaseRepo) GetProductDecreases() ([]entity.ProductInsideInv
 }
 
 func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]entity.ProductInsideInvoice, error) {
-	conn := pdr.SqlConn.SqliteConn()
+	conn := pdr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -76,7 +76,7 @@ func (pdr *ProductDecreaseRepo) GetProductDecreaseByID(invoiceID int) ([]entity.
 }
 
 func (pdr *ProductDecreaseRepo) AddDecProductStock(decQuantity *entity.ProductDec) (*entity.ProductDec, error) {
-	conn := pdr.SqlConn.SqliteConn()
+	conn := pdr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/entity"
+	"time"
 )
 
 type CustomerRepo struct {
@@ -17,7 +18,7 @@ type CustomerRepoInterface interface {
 }
 
 func (cr *CustomerRepo) GetCustomers() ([]entity.Customer, error) {
-	conn := cr.SqlConn.SqliteConn()
+	conn := cr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -49,7 +50,7 @@ func (cr *CustomerRepo) GetCustomers() ([]entity.Customer, error) {
 }
 
 func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*entity.Customer, error) {
-	conn := cr.SqlConn.SqliteConn()
+	conn := cr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -60,11 +61,11 @@ func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*entity
 	}
 
 	result, err :=
-		conn.Prepare("insert into customers(name, phone, email, address) values (?, ?, ?, ?)")
+		conn.Prepare("insert into customers(name, phone, email, address, created_at, updated_at) values (?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(name, phone, email, address)
+	getID, err := result.Exec(name, phone, email, address, time.Now().Unix(), time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +84,7 @@ func (cr *CustomerRepo) AddCustomer(name, phone, email, address string) (*entity
 }
 
 func (cr *CustomerRepo) EditCustomer(name, phone, email, address string, customerID int) (*entity.Customer, error) {
-	conn := cr.SqlConn.SqliteConn()
+	conn := cr.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -94,12 +95,20 @@ func (cr *CustomerRepo) EditCustomer(name, phone, email, address string, custome
 	}
 
 	result, err :=
-		conn.Prepare("update customers set name=?, phone=?, email=?, address=? where id=?")
+		conn.Prepare("update customers set name=?, phone=?, email=?, address=?, updated_at=? where id=?")
 	if err != nil {
 		return nil, err
 	}
-	if _, err := result.Exec(name, phone, email, address, customerID); err != nil {
+	edited, err := result.Exec(name, phone, email, address, time.Now().Unix(), customerID)
+	if err != nil {
 		return nil, err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+	if effected == 0 {
+		return nil, errors.New("no data edited")
 	}
 
 	return &entity.Customer{

@@ -5,6 +5,7 @@ import (
 	"github.com/huf0813/pembukuan_tk/db/sqlite"
 	"github.com/huf0813/pembukuan_tk/entity"
 	"github.com/huf0813/pembukuan_tk/utils"
+	"time"
 )
 
 type UserRepo struct {
@@ -20,7 +21,7 @@ type UserRepoInterface interface {
 }
 
 func (ur *UserRepo) GetUsers() ([]entity.User, error) {
-	conn := ur.SqlConn.SqliteConn()
+	conn := ur.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -51,7 +52,7 @@ func (ur *UserRepo) GetUsers() ([]entity.User, error) {
 }
 
 func (ur *UserRepo) FindUserByUsername(usernameSearch string) (*entity.User, error) {
-	conn := ur.SqlConn.SqliteConn()
+	conn := ur.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -70,7 +71,7 @@ func (ur *UserRepo) FindUserByUsername(usernameSearch string) (*entity.User, err
 }
 
 func (ur *UserRepo) AddUser(newUser *entity.User) (*entity.User, error) {
-	conn := ur.SqlConn.SqliteConn()
+	conn := ur.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -81,11 +82,11 @@ func (ur *UserRepo) AddUser(newUser *entity.User) (*entity.User, error) {
 	}
 
 	result, err :=
-		conn.Prepare("insert into users(user_type_id, username, password) values (?, ?, ?)")
+		conn.Prepare("insert into users(user_type_id, username, password, created_at, updated_at) values (?, ?, ?, ?, ?)")
 	if err != nil {
 		return nil, err
 	}
-	getID, err := result.Exec(newUser.UserTypeID, newUser.Username, newUser.Password)
+	getID, err := result.Exec(newUser.UserTypeID, newUser.Username, newUser.Password, time.Now().Unix(), time.Now().Unix())
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +104,7 @@ func (ur *UserRepo) AddUser(newUser *entity.User) (*entity.User, error) {
 }
 
 func (ur *UserRepo) EditUser(editedUser *entity.User) (*entity.User, error) {
-	conn := ur.SqlConn.SqliteConn()
+	conn := ur.SqlConn.SqliteConnInit()
 	defer func() {
 		if err := conn.Close(); err != nil {
 			panic(err)
@@ -114,12 +115,20 @@ func (ur *UserRepo) EditUser(editedUser *entity.User) (*entity.User, error) {
 	}
 
 	result, err :=
-		conn.Prepare("update users set username=?, password=? where id=?")
+		conn.Prepare("update users set username=?, password=?, updated_at=? where id=?")
 	if err != nil {
 		return nil, err
 	}
-	if _, err := result.Exec(editedUser.Username, editedUser.Password, editedUser.ID); err != nil {
+	edited, err := result.Exec(editedUser.Username, editedUser.Password, time.Now().Unix(), editedUser.ID)
+	if err != nil {
 		return nil, err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+	if effected == 0 {
+		return nil, errors.New("no data edited")
 	}
 
 	return &entity.User{
