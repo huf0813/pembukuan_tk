@@ -37,6 +37,7 @@ go run main.go
 2. Golang REST API 
 3. DB SQLite
 4. GO MUX Router Helper 
+5. JSON Web Token for securing Endpoints
 ```
 
 ## <b>API without JWT Token</b>
