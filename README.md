@@ -850,7 +850,7 @@ payload :
 response :
 {
   "status": "success",
-  "message": "user deleted successfully",
+  "message": "product deleted successfully",
   "data": null
 }
 ```
