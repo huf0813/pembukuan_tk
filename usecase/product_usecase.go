@@ -11,25 +11,12 @@ type ProductUseCase struct {
 	ProductDecRepo sqlite.ProductDecreaseRepo
 }
 
-func (pus *ProductUseCase) AddProductStockValidation(productInc *entity.ProductIncrease) error {
-	if productInc.Quantity <= 0 {
-		return errors.New("quantity cannot be less than equal 0")
+func (pus *ProductUseCase) GetProducts() ([]entity.ProductStock, error) {
+	result, err := pus.ProductRepo.GetProducts()
+	if err != nil {
+		return nil, err
 	}
-	if productInc.ProductID <= 0 {
-		return errors.New("product_id cannot be less than equal 0")
-	}
-	if productInc.UserID <= 0 {
-		return errors.New("user_id cannot be less than equal 0")
-	}
-	return nil
-}
-
-func (pus *ProductUseCase) DecProductValidation(productDec *entity.ProductDec) error {
-	var err = errors.New("can't pass the validation")
-	if productDec.Quantity < 0 {
-		return err
-	}
-	return nil
+	return result, nil
 }
 
 func (pus *ProductUseCase) AddProductValidation(product *entity.Product) error {
@@ -40,6 +27,17 @@ func (pus *ProductUseCase) AddProductValidation(product *entity.Product) error {
 		return errors.New("price cannot be empty")
 	}
 	return nil
+}
+
+func (pus *ProductUseCase) AddProduct(newProduct *entity.Product) (*entity.Product, error) {
+	if err := pus.AddProductValidation(newProduct); err != nil {
+		return nil, err
+	}
+	result, err := pus.ProductRepo.AddProduct(newProduct)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
 
 func (pus *ProductUseCase) EditProductValidation(editedProduct *entity.Product) error {
@@ -55,25 +53,6 @@ func (pus *ProductUseCase) EditProductValidation(editedProduct *entity.Product) 
 	return nil
 }
 
-func (pus *ProductUseCase) GetProducts() ([]entity.ProductStock, error) {
-	result, err := pus.ProductRepo.GetProducts()
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func (pus *ProductUseCase) AddProduct(newProduct *entity.Product) (*entity.Product, error) {
-	if err := pus.AddProductValidation(newProduct); err != nil {
-		return nil, err
-	}
-	result, err := pus.ProductRepo.AddProduct(newProduct)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
 func (pus *ProductUseCase) EditProduct(editedProduct *entity.Product) (*entity.Product, error) {
 	if err := pus.EditProductValidation(editedProduct); err != nil {
 		return nil, err
@@ -83,6 +62,19 @@ func (pus *ProductUseCase) EditProduct(editedProduct *entity.Product) (*entity.P
 		return nil, err
 	}
 	return result, nil
+}
+
+func (pus *ProductUseCase) AddProductStockValidation(productInc *entity.ProductIncrease) error {
+	if productInc.Quantity <= 0 {
+		return errors.New("quantity cannot be less than equal 0")
+	}
+	if productInc.ProductID <= 0 {
+		return errors.New("product_id cannot be less than equal 0")
+	}
+	if productInc.UserID <= 0 {
+		return errors.New("user_id cannot be less than equal 0")
+	}
+	return nil
 }
 
 func (pus *ProductUseCase) AddProductStock(addProductStock *entity.ProductIncrease) (*entity.ProductIncrease, error) {
@@ -95,7 +87,15 @@ func (pus *ProductUseCase) AddProductStock(addProductStock *entity.ProductIncrea
 		return nil, err
 	}
 
-	return result, err
+	return result, nil
+}
+
+func (pus *ProductUseCase) DecProductValidation(productDec *entity.ProductDec) error {
+	var err = errors.New("can't pass the validation")
+	if productDec.Quantity < 0 {
+		return err
+	}
+	return nil
 }
 
 func (pus *ProductUseCase) DecProductStock(decProductStock *entity.ProductDec) (*entity.ProductDec, error) {
@@ -108,5 +108,14 @@ func (pus *ProductUseCase) DecProductStock(decProductStock *entity.ProductDec) (
 		return nil, err
 	}
 
-	return result, err
+	return result, nil
+}
+
+func (pus *ProductUseCase) DeleteProduct(decProductStock int) (string, error) {
+	result, err := pus.ProductRepo.DeleteProductByID(decProductStock)
+	if err != nil {
+		return "", err
+	}
+
+	return result, nil
 }

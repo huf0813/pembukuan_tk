@@ -81,3 +81,22 @@ func (pctr *ProductCTR) AddProductStock(w http.ResponseWriter, r *http.Request) 
 		200, "success", "", result)
 	return
 }
+
+func (pctr *ProductCTR) DeleteProduct(w http.ResponseWriter, r *http.Request) {
+	var deleteProduct *entity.DeleteRowTemp
+	if err := json.NewDecoder(r.Body).Decode(&deleteProduct); err != nil {
+		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	res, err := pctr.ProductUseCase.DeleteProduct(deleteProduct.ID)
+	if err != nil {
+		pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		200, "success", "", res)
+	return
+}

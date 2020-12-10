@@ -26,7 +26,7 @@ func (pr *ProductRepo) GetProducts() ([]entity.ProductStock, error) {
 
 	queryStock := "(select sum(product_increases.quantity) from product_increases where product_increases.product_id=products.id) stock"
 	queryQtyInvoice := "(select sum(product_decreases.quantity) from product_decreases where product_decreases.product_id=products.id) qty_invoice"
-	stringQuery := fmt.Sprintf("select id, name, price, %s, %s from products", queryStock, queryQtyInvoice)
+	stringQuery := fmt.Sprintf("select id, name, price, %s, %s from products where deleted_at is null", queryStock, queryQtyInvoice)
 	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
@@ -119,4 +119,35 @@ func (pr *ProductRepo) EditProductByID(editedProduct *entity.Product) (*entity.P
 		Name:  editedProduct.Name,
 		Price: editedProduct.Price,
 	}, nil
+}
+
+func (pr *ProductRepo) DeleteProductByID(productID int) (string, error) {
+	conn := pr.SqlConn.SqliteConnInit()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return "", errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("update products set deleted_at=? where id=?")
+	if err != nil {
+		return "", err
+	}
+	edited, err := result.Exec(time.Now().Unix(), productID)
+	if err != nil {
+		return "", err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+	if effected == 0 {
+		return "", errors.New("no data edited")
+	}
+
+	return "product deleted successfully", nil
 }

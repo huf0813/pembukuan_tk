@@ -15,6 +15,8 @@ type CustomerRepo struct {
 type CustomerRepoInterface interface {
 	GetCustomers() ([]entity.Customer, error)
 	AddCustomer(name, phone, email, address string) (*entity.Customer, error)
+	EditCustomer(name, phone, email, address string, customerID int) (*entity.Customer, error)
+	DeleteCustomer(customerID int) (string, error)
 }
 
 func (cr *CustomerRepo) GetCustomers() ([]entity.Customer, error) {
@@ -28,7 +30,7 @@ func (cr *CustomerRepo) GetCustomers() ([]entity.Customer, error) {
 		return nil, errors.New("connection failed to db")
 	}
 
-	rows, err := conn.Query("select id, name, phone, email, address from customers")
+	rows, err := conn.Query("select id, name, phone, email, address from customers where deleted_at is null")
 	if err != nil {
 		return nil, err
 	}
@@ -118,4 +120,35 @@ func (cr *CustomerRepo) EditCustomer(name, phone, email, address string, custome
 		Email:   email,
 		Address: address,
 	}, nil
+}
+
+func (cr *CustomerRepo) DeleteCustomer(customerID int) (string, error) {
+	conn := cr.SqlConn.SqliteConnInit()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return "", errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("update customers set email=?, phone=?, deleted_at=? where id=?")
+	if err != nil {
+		return "", err
+	}
+	edited, err := result.Exec(customerID, customerID, time.Now().Unix(), customerID)
+	if err != nil {
+		return "", err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+	if effected == 0 {
+		return "", errors.New("no data deleted")
+	}
+
+	return "deleted successfully", nil
 }

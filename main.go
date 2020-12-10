@@ -23,10 +23,12 @@ var (
 )
 
 func init() {
+	// auto create schema
 	if err := sqliteConnInit.AutoDropDB(); err != nil {
 		panic(err)
 	}
 
+	// auto insert
 	admin := "admin"
 	if err := userTypeRepo.AddUserType(admin); err != nil {
 		panic(err)

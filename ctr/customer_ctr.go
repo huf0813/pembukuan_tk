@@ -13,12 +13,6 @@ type CustomerCTR struct {
 	Res             customJSON.JSONCustom
 }
 
-type CustomerCTRInterface interface {
-	FetchCustomers(w http.ResponseWriter, _ *http.Request)
-	CustomerRegister(w http.ResponseWriter, r *http.Request)
-	EditCustomer(w http.ResponseWriter, r *http.Request)
-}
-
 func (cc *CustomerCTR) FetchCustomers(w http.ResponseWriter, _ *http.Request) {
 	result, err := cc.CustomerUseCase.GetCustomers()
 	if err != nil {
@@ -69,5 +63,25 @@ func (cc *CustomerCTR) EditCustomer(w http.ResponseWriter, r *http.Request) {
 		http.StatusOK, "success",
 		"edited successfully",
 		updatedCustomer)
+	return
+}
+
+func (cc *CustomerCTR) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
+	var editCustomer entity.DeleteRowTemp
+	if err := json.NewDecoder(r.Body).Decode(&editCustomer); err != nil {
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json", http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	res, err := cc.CustomerUseCase.DeleteCustomer(editCustomer.ID)
+	if err != nil {
+		cc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+	cc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success",
+		"deleted successfully",
+		res)
 	return
 }

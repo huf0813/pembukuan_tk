@@ -62,3 +62,11 @@ func (cuc *CustomerUseCase) EditCustomer(name, phone, email, address string, cus
 	}
 	return result, nil
 }
+
+func (cuc *CustomerUseCase) DeleteCustomer(customerID int) (string, error) {
+	result, err := cuc.CustomerRepo.DeleteCustomer(customerID)
+	if err != nil {
+		return "", err
+	}
+	return result, nil
+}

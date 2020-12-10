@@ -11,8 +11,9 @@ import (
 )
 
 type InvoiceUseCase struct {
-	InvoiceRepo    sqlite.InvoiceRepo
-	ProductUseCase ProductUseCase
+	InvoiceRepo     sqlite.InvoiceRepo
+	ProductUseCase  ProductUseCase
+	CustomerUseCase CustomerUseCase
 }
 
 func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
@@ -37,18 +38,31 @@ func (iuc *InvoiceUseCase) GetInvoiceByID(invoiceID int) (*entity.InvoiceWithDet
 }
 
 func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) error {
-	err := errors.New("cannot pass the validation")
 	if newInvoiceReq.ListProduct == nil {
-		return err
+		return errors.New("list must be filled")
 	}
 	if len(newInvoiceReq.ListProduct) == 0 {
-		return err
+		return errors.New("cannot have zero value")
 	}
 	if newInvoiceReq.UserID <= 0 {
-		return err
+		return errors.New("cannot have zero value")
 	}
 	if newInvoiceReq.CustomerID <= 0 {
+		return errors.New("cannot have zero value")
+	}
+
+	flag := false
+	customers, err := iuc.CustomerUseCase.GetCustomers()
+	if err != nil {
 		return err
+	}
+	for _, val := range customers {
+		if val.ID == newInvoiceReq.CustomerID {
+			flag = true
+		}
+	}
+	if !flag {
+		return errors.New("customer not found")
 	}
 	return nil
 }
@@ -67,12 +81,18 @@ func (iuc *InvoiceUseCase) InvoiceProductDecValidation(newProdDec *entity.Produc
 	if err != nil {
 		return err
 	}
+
+	founded := false
 	for _, v := range getProducts {
 		if newProdDec.ProductID == v.ID {
+			founded = true
 			if (int(v.Stock) - newProdDec.Quantity) < 0 {
 				return errors.New("stock is not available")
 			}
 		}
+	}
+	if !founded {
+		return errors.New("product was not found")
 	}
 	return nil
 }
@@ -98,6 +118,7 @@ func (iuc *InvoiceUseCase) AddInvoice(newInvoiceReq *entity.InvoiceReq) (*entity
 			InvoiceID: resultInvoice.ID,
 		}
 		if err := iuc.InvoiceProductDecValidation(obj); err != nil {
+			iuc.InvoiceRepo.DeleteInvoiceByID(resultInvoice.ID)
 			return nil, err
 		}
 		if _, err := iuc.ProductUseCase.DecProductStock(obj); err != nil {

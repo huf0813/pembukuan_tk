@@ -58,7 +58,7 @@ func (ir *InvoiceRepo) GetInvoices() ([]entity.InvoiceWithDetail, error) {
 
 	// get invoices
 	subQueryTotalPerInvoice := "(SELECT sum(product_decreases.quantity * products.price) from product_decreases join products on products.id=product_decreases.product_id where product_decreases.invoice_id=invoices.id) total_price"
-	stringQuery := fmt.Sprintf("SELECT invoices.id, customers.name, customers.phone, customers.email, customers.address, invoices.created_at, invoices.updated_at, %s from invoices join customers on customers.id=invoices.customer_id", subQueryTotalPerInvoice)
+	stringQuery := fmt.Sprintf("SELECT invoices.id, customers.name, customers.phone, customers.email, customers.address, invoices.created_at, invoices.updated_at, %s from invoices join customers on customers.id=invoices.customer_id where invoices.deleted_at is null", subQueryTotalPerInvoice)
 	rows, err := conn.Query(stringQuery)
 	if err != nil {
 		return nil, err
@@ -83,4 +83,52 @@ func (ir *InvoiceRepo) GetInvoices() ([]entity.InvoiceWithDetail, error) {
 		result = append(result, dataRow)
 	}
 	return result, nil
+}
+
+func (ir *InvoiceRepo) DeleteInvoiceByID(invoiceID int) (string, error) {
+	conn := ir.SqlConn.SqliteConnInit()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return "", errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("delete from invoices where id=?")
+	if err != nil {
+		return "", err
+	}
+	edited, err := result.Exec(invoiceID)
+	if err != nil {
+		return "", err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+	if effected == 0 {
+		return "", errors.New("no data deleted")
+	}
+
+	result2, err :=
+		conn.Prepare("delete from product_decreases where invoice_id=?")
+	if err != nil {
+		return "", err
+	}
+	edited2, err := result2.Exec(invoiceID)
+	if err != nil {
+		return "", err
+	}
+	effected2, err := edited2.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+	if effected2 == 0 {
+		return "", errors.New("no data deleted")
+	}
+
+	return "invoice deleted successfully", nil
 }

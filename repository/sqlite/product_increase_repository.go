@@ -8,7 +8,27 @@ import (
 )
 
 type ProductIncreaseRepo struct {
-	SqlConn sqlite.ConnSqlite
+	SqlConn     sqlite.ConnSqlite
+	ProductRepo ProductRepo
+}
+
+func (pr *ProductRepo) AddProductStockValidation(productID int) error {
+	products, err := pr.GetProducts()
+	if err != nil {
+		return nil
+	}
+
+	flag := false
+	for _, val := range products {
+		if val.ID == productID {
+			flag = true
+		}
+	}
+
+	if !flag {
+		return errors.New("product not found")
+	}
+	return nil
 }
 
 func (pr *ProductRepo) AddProductStock(addQuantity *entity.ProductIncrease) (*entity.ProductIncrease, error) {
@@ -20,6 +40,10 @@ func (pr *ProductRepo) AddProductStock(addQuantity *entity.ProductIncrease) (*en
 	}()
 	if conn == nil {
 		return nil, errors.New("connection failed to db")
+	}
+
+	if err := pr.AddProductStockValidation(addQuantity.ProductID); err != nil {
+		return nil, err
 	}
 
 	result, err :=
