@@ -26,7 +26,7 @@ func (uuc *UserUseCase) GetUsers() ([]entity.User, error) {
 }
 
 func (uuc *UserUseCase) GetAllUsersIncludingAdmin() ([]entity.User, error) {
-	return uuc.UserRepo.GetUsers()
+	return uuc.UserRepo.GetAllUsers()
 }
 
 func (uuc *UserUseCase) AddUserValidation(newUser *entity.User) error {
