@@ -97,6 +97,6 @@ func (pctr *ProductCTR) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	pctr.Res.CustomJSONRes(w, "Content-Type", "application/json",
-		200, "success", "", res)
+		200, "success", res, nil)
 	return
 }

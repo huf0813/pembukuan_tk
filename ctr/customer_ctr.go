@@ -81,7 +81,7 @@ func (cc *CustomerCTR) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 	cc.Res.CustomJSONRes(w, "Content-Type", "application/json",
 		http.StatusOK, "success",
-		"deleted successfully",
-		res)
+		res,
+		nil)
 	return
 }

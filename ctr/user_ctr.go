@@ -91,6 +91,6 @@ func (uc *UserCTR) DeletedUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
-		http.StatusOK, "success", "", result)
+		http.StatusOK, "success", result, nil)
 	return
 }
