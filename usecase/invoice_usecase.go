@@ -67,7 +67,7 @@ func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) e
 	}
 
 	flagUser := false
-	users, err := iuc.UserUseCase.GetUsers()
+	users, err := iuc.UserUseCase.GetAllUsersIncludingAdmin()
 	if err != nil {
 		return err
 	}
