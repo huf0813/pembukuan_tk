@@ -403,6 +403,38 @@ response :
 }
 ```
 
+12. Delete Product
+```
+POST -> /products/delete
+header : user token
+payload : 
+{
+	"id": 2
+}
+response :
+{
+  "status": "success",
+  "message": "user deleted successfully",
+  "data": null
+}
+```
+
+13. Delete Customer
+```
+POST -> /customers/delete
+header : user token
+payload : 
+{
+	"id": 2
+}
+response :
+{
+  "status": "success",
+  "message": "customer deleted successfully",
+  "data": null
+}
+```
+
 ## <b>API ADMIN with JWT Token</b>
 
 1. Get All Products
@@ -807,4 +839,50 @@ response :
   }
 }
 ```
+15. Delete Product
+```
+POST -> /admin/products/delete
+header : user token
+payload : 
+{
+	"id": 1
+}
+response :
+{
+  "status": "success",
+  "message": "user deleted successfully",
+  "data": null
+}
+```
 
+16. Delete Customer
+```
+POST -> /admin/customers/delete
+header : user token
+payload : 
+{
+	"id": 1
+}
+response :
+{
+  "status": "success",
+  "message": "customer deleted successfully",
+  "data": null
+}
+```
+
+17. Delete Customer
+```
+POST -> /admin/users/delete
+header : user token
+payload : 
+{
+	"id": 1
+}
+response :
+{
+  "status": "success",
+  "message": "user deleted successfully",
+  "data": null
+}
+```
