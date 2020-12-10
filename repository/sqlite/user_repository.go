@@ -51,6 +51,37 @@ func (ur *UserRepo) GetUsers() ([]entity.User, error) {
 	return result, nil
 }
 
+func (ur *UserRepo) GetAllUsers() ([]entity.User, error) {
+	conn := ur.SqlConn.SqliteConnInit()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return nil, errors.New("connection failed to db")
+	}
+
+	rows, err := conn.Query("select id, user_type_id, username, password from users where deleted_at is null")
+	if err != nil {
+		return nil, err
+	}
+
+	var result []entity.User
+	for rows.Next() {
+		var rowData entity.User
+		if err := rows.Scan(&rowData.ID,
+			&rowData.UserTypeID,
+			&rowData.Username,
+			&rowData.Password); err != nil {
+			return nil, err
+		}
+		result = append(result, rowData)
+	}
+
+	return result, nil
+}
+
 func (ur *UserRepo) FindUserByUsername(usernameSearch string) (*entity.User, error) {
 	conn := ur.SqlConn.SqliteConnInit()
 	defer func() {

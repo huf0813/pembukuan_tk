@@ -91,7 +91,7 @@ func (pus *ProductUseCase) AddProductStockValidation(productInc *entity.ProductI
 		return errors.New("product not found")
 	}
 
-	users, err := pus.UserUseCase.GetUsers()
+	users, err := pus.UserUseCase.GetAllUsersIncludingAdmin()
 	if err != nil {
 		return nil
 	}

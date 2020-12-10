@@ -18,9 +18,14 @@ type UserUseCaseInterface interface {
 	AddUser(username, password string, userTypeID int) (*entity.User, error)
 	EditUserValidation(newUser *entity.User) error
 	EditUser(editUsername, editedPassword string, userID int) (*entity.User, error)
+	GetAllUsersIncludingAdmin() ([]entity.User, error)
 }
 
 func (uuc *UserUseCase) GetUsers() ([]entity.User, error) {
+	return uuc.UserRepo.GetUsers()
+}
+
+func (uuc *UserUseCase) GetAllUsersIncludingAdmin() ([]entity.User, error) {
 	return uuc.UserRepo.GetUsers()
 }
 
