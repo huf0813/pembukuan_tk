@@ -30,6 +30,15 @@ go run main.go
 3. Customer
 ```
 
+## <b>Tech Stack</b>
+
+```
+1. Heroku
+2. Golang REST API 
+3. DB SQLite
+4. GO MUX Router Helper 
+```
+
 ## <b>API without JWT Token</b>
 
 1. Login
