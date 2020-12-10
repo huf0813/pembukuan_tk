@@ -14,6 +14,7 @@ type InvoiceUseCase struct {
 	InvoiceRepo     sqlite.InvoiceRepo
 	ProductUseCase  ProductUseCase
 	CustomerUseCase CustomerUseCase
+	UserUseCase     UserUseCase
 }
 
 func (iuc *InvoiceUseCase) GetInvoices() ([]entity.InvoiceWithDetail, error) {
@@ -51,19 +52,34 @@ func (iuc *InvoiceUseCase) InvoiceValidation(newInvoiceReq *entity.InvoiceReq) e
 		return errors.New("cannot have zero value")
 	}
 
-	flag := false
+	flagCustomer := false
 	customers, err := iuc.CustomerUseCase.GetCustomers()
 	if err != nil {
 		return err
 	}
 	for _, val := range customers {
 		if val.ID == newInvoiceReq.CustomerID {
-			flag = true
+			flagCustomer = true
 		}
 	}
-	if !flag {
+	if !flagCustomer {
 		return errors.New("customer not found")
 	}
+
+	flagUser := false
+	users, err := iuc.UserUseCase.GetUsers()
+	if err != nil {
+		return err
+	}
+	for _, val := range users {
+		if val.ID == newInvoiceReq.UserID {
+			flagUser = true
+		}
+	}
+	if !flagUser {
+		return errors.New("user not found")
+	}
+
 	return nil
 }
 

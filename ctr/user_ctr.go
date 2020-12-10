@@ -18,6 +18,7 @@ type UserCTRInterface interface {
 	FetchUsers(w http.ResponseWriter, r *http.Request)
 	AddUser(w http.ResponseWriter, r *http.Request)
 	EditedUser(w http.ResponseWriter, r *http.Request)
+	DeletedUser(w http.ResponseWriter, r *http.Request)
 }
 
 func (uc *UserCTR) DashboardUser(w http.ResponseWriter, _ *http.Request) {
@@ -65,6 +66,25 @@ func (uc *UserCTR) EditedUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	result, err := uc.UserUseCase.EditUser(editedUser.Username, editedUser.Password, editedUser.ID)
+	if err != nil {
+		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+	uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+		http.StatusOK, "success", "", result)
+	return
+}
+
+func (uc *UserCTR) DeletedUser(w http.ResponseWriter, r *http.Request) {
+	var editedUser entity.DeleteRowTemp
+	if err := json.NewDecoder(r.Body).Decode(&editedUser); err != nil {
+		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
+			http.StatusOK, "error", err.Error(), nil)
+		return
+	}
+
+	result, err := uc.UserUseCase.DeleteUser(editedUser.ID)
 	if err != nil {
 		uc.Res.CustomJSONRes(w, "Content-Type", "application/json",
 			http.StatusOK, "error", err.Error(), nil)

@@ -8,8 +8,7 @@ import (
 )
 
 type CustomerRepo struct {
-	CustomerModel entity.Customer
-	SqlConn       sqlite.ConnSqlite
+	SqlConn sqlite.ConnSqlite
 }
 
 type CustomerRepoInterface interface {
@@ -97,7 +96,7 @@ func (cr *CustomerRepo) EditCustomer(name, phone, email, address string, custome
 	}
 
 	result, err :=
-		conn.Prepare("update customers set name=?, phone=?, email=?, address=?, updated_at=? where id=?")
+		conn.Prepare("update customers set name=?, phone=?, email=?, address=?, updated_at=? where id=? and deleted_at is null")
 	if err != nil {
 		return nil, err
 	}

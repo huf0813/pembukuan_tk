@@ -8,7 +8,9 @@ import (
 
 type ProductUseCase struct {
 	ProductRepo    sqlite.ProductRepo
+	ProductIncRepo sqlite.ProductIncreaseRepo
 	ProductDecRepo sqlite.ProductDecreaseRepo
+	UserUseCase    UserUseCase
 }
 
 func (pus *ProductUseCase) GetProducts() ([]entity.ProductStock, error) {
@@ -74,6 +76,35 @@ func (pus *ProductUseCase) AddProductStockValidation(productInc *entity.ProductI
 	if productInc.UserID <= 0 {
 		return errors.New("user_id cannot be less than equal 0")
 	}
+
+	products, err := pus.GetProducts()
+	if err != nil {
+		return nil
+	}
+	flagProductID := false
+	for _, val := range products {
+		if val.ID == productInc.ProductID {
+			flagProductID = true
+		}
+	}
+	if !flagProductID {
+		return errors.New("product not found")
+	}
+
+	users, err := pus.UserUseCase.GetUsers()
+	if err != nil {
+		return nil
+	}
+	flagUserID := false
+	for _, val := range users {
+		if val.ID == productInc.UserID {
+			flagUserID = true
+		}
+	}
+	if !flagUserID {
+		return errors.New("user not found")
+	}
+
 	return nil
 }
 
@@ -82,7 +113,7 @@ func (pus *ProductUseCase) AddProductStock(addProductStock *entity.ProductIncrea
 		return nil, err
 	}
 
-	result, err := pus.ProductRepo.AddProductStock(addProductStock)
+	result, err := pus.ProductIncRepo.AddProductStock(addProductStock)
 	if err != nil {
 		return nil, err
 	}

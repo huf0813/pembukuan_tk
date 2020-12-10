@@ -133,7 +133,7 @@ func (pr *ProductRepo) DeleteProductByID(productID int) (string, error) {
 	}
 
 	result, err :=
-		conn.Prepare("update products set deleted_at=? where id=?")
+		conn.Prepare("update products set deleted_at=? where id=? and deleted_at is null")
 	if err != nil {
 		return "", err
 	}
@@ -146,7 +146,7 @@ func (pr *ProductRepo) DeleteProductByID(productID int) (string, error) {
 		return "", err
 	}
 	if effected == 0 {
-		return "", errors.New("no data edited")
+		return "", errors.New("no data deleted")
 	}
 
 	return "product deleted successfully", nil

@@ -63,7 +63,7 @@ func (ur *UserRepo) FindUserByUsername(usernameSearch string) (*entity.User, err
 	}
 
 	var founded entity.User
-	if err := conn.QueryRow("select id, user_type_id, username, password from users where username=?",
+	if err := conn.QueryRow("select id, user_type_id, username, password from users where username=? and deleted_at is null",
 		usernameSearch).Scan(&founded.ID, &founded.UserTypeID, &founded.Username, &founded.Password); err != nil {
 		return nil, err
 	}
@@ -115,7 +115,7 @@ func (ur *UserRepo) EditUser(editedUser *entity.User) (*entity.User, error) {
 	}
 
 	result, err :=
-		conn.Prepare("update users set username=?, password=?, updated_at=? where id=?")
+		conn.Prepare("update users set username=?, password=?, updated_at=? where id=? and deleted_at is null")
 	if err != nil {
 		return nil, err
 	}
@@ -137,4 +137,35 @@ func (ur *UserRepo) EditUser(editedUser *entity.User) (*entity.User, error) {
 		Password:   editedUser.Password,
 		UserTypeID: editedUser.UserTypeID,
 	}, nil
+}
+
+func (ur *UserRepo) DeleteUser(userID int) (string, error) {
+	conn := ur.SqlConn.SqliteConnInit()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			panic(err)
+		}
+	}()
+	if conn == nil {
+		return "", errors.New("connection failed to db")
+	}
+
+	result, err :=
+		conn.Prepare("update users set username=?, password=?, deleted_at=? where id=? and deleted_at is null and user_type_id = 2")
+	if err != nil {
+		return "", err
+	}
+	edited, err := result.Exec(userID, userID, time.Now().Unix(), userID)
+	if err != nil {
+		return "", err
+	}
+	effected, err := edited.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+	if effected == 0 {
+		return "", errors.New("no data deleted")
+	}
+
+	return "user deleted successfully", nil
 }

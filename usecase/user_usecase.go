@@ -64,6 +64,20 @@ func (uuc *UserUseCase) EditUserValidation(newUser *entity.User) error {
 	if newUser.ID == 0 {
 		return errors.New("username cannot be empty")
 	}
+
+	flag := false
+	res, err := uuc.GetUsers()
+	if err != nil {
+		return err
+	}
+	for _, val := range res {
+		if val.ID == newUser.ID {
+			flag = true
+		}
+	}
+	if !flag {
+		return errors.New("user was not found")
+	}
 	return nil
 }
 
@@ -84,6 +98,14 @@ func (uuc *UserUseCase) EditUser(editUsername, editedPassword string, userID int
 	result, err := uuc.UserRepo.EditUser(editedUser)
 	if err != nil {
 		return nil, err
+	}
+	return result, nil
+}
+
+func (uuc *UserUseCase) DeleteUser(userID int) (string, error) {
+	result, err := uuc.UserRepo.DeleteUser(userID)
+	if err != nil {
+		return "", err
 	}
 	return result, nil
 }
