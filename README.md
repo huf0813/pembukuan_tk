@@ -871,7 +871,7 @@ response :
 }
 ```
 
-17. Delete Customer
+17. Delete User
 ```
 POST -> /admin/users/delete
 header : user token
